@@ -24,6 +24,12 @@ public class LilLexiControl
 	void remove() {
 		currentDoc.remove();
 	}
+	void undo() {
+		currentDoc.undo();
+	}
+	void redo() {
+		currentDoc.redo();
+	}
 	
 	Glyph getChar() {
 		return currentDoc.getGlyphs().get(0);
