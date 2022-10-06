@@ -54,6 +54,7 @@ public class LilLexiUI
 		//---- create widgets for the interface
 	    Composite upperComp = new Composite(shell, SWT.NO_FOCUS);
 	    Composite lowerComp = new Composite(shell, SWT.NO_FOCUS);
+	    Composite rightComp = new Composite(shell, SWT.NO_FOCUS);
 	    
 	    //---- canvas for the document
 		canvas = new Canvas(upperComp, SWT.NONE);
@@ -169,6 +170,15 @@ public class LilLexiUI
 	    helpGetHelpItem = new MenuItem(helpMenu, SWT.PUSH);
 	    helpGetHelpItem.setText("Get Help");
 	    
+	    // - - - - - Sidebar Interface - - - - - - - - - - //
+	    Button undo = new Button(upperComp, SWT.PUSH);
+	    undo.setText("Undo");
+	    undo.setBounds(810, 10, 75, 30);
+	    
+	    Button redo = new Button(upperComp, SWT.PUSH);
+	    redo.setText("Redo");
+	    redo.setBounds(810, 40, 75, 30);
+	    
 	    
 	    
 	    // - - - - - Interface for adding a image - - - - - //
@@ -277,6 +287,18 @@ public class LilLexiUI
 	    submitRectangle.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		
+	    	}
+	    	public void widgetDefaultSelected(SelectionEvent event) {}
+	    });
+	    undo.addSelectionListener(new SelectionListener() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		lexiControl.undo();
+	    	}
+	    	public void widgetDefaultSelected(SelectionEvent event) {}
+	    });
+	    redo.addSelectionListener(new SelectionListener() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		lexiControl.redo();
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
