@@ -1,24 +1,27 @@
 /**
- * UI for Lil Lexi
- * 
+ * AUTHOR(S):	Ryan Rizzo
+ * CLASS:		CSC 335
+ * FILE:		LilLexiUI.java
+ * DATE:		10/13/22
  */
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Font;
-
 import java.io.File;
 import java.util.List;
 
-
 /**
- * LilLexiUI
+ * PURPOSE:
+ * This class is responsible for handling all of the user interface
+ * for LilLexi
+ * 
+ * METHODS:
  * 
  */
 public class LilLexiUI
@@ -31,7 +34,7 @@ public class LilLexiUI
 	private Canvas canvas;	
 	private int glyphsLength;
 	
-	/**
+	/*
 	 * Constructor
 	 */
 	public LilLexiUI() 
@@ -54,7 +57,6 @@ public class LilLexiUI
 		//---- create widgets for the interface
 	    Composite upperComp = new Composite(shell, SWT.NO_FOCUS);
 	    Composite lowerComp = new Composite(shell, SWT.NO_FOCUS);
-	    Composite rightComp = new Composite(shell, SWT.NO_FOCUS);
 	    
 	    //---- canvas for the document
 		canvas = new Canvas(upperComp, SWT.NONE);
@@ -66,8 +68,15 @@ public class LilLexiUI
 			e.gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE)); 
             e.gc.fillRectangle(rect.x, rect.y, rect.width, rect.height);
             e.gc.setForeground(display.getSystemColor(SWT.COLOR_BLUE)); 
-    		Font font = new Font(display, "Courier", 24, SWT.BOLD );
+    		Font font = new Font(display, currentDoc.getCurrFont(), currentDoc.getCurrSize(), SWT.BOLD );
     		e.gc.setFont(font);
+    		//TODO
+    		
+    		String colorName = currentDoc.getCurrColor();
+    		int colorCode = getColorCode(colorName);
+    		Color color = display.getSystemColor(colorCode);
+    		System.out.println(colorName + ", " + colorCode + ", " + color);
+    		e.gc.setForeground(color);
     		
     		List<Glyph> glyphs = currentDoc.getGlyphs();
     		int column = 0; int row = 0;
@@ -171,14 +180,72 @@ public class LilLexiUI
 	    helpGetHelpItem.setText("Get Help");
 	    
 	    // - - - - - Sidebar Interface - - - - - - - - - - //
+	    
+	    // Undo button
 	    Button undo = new Button(upperComp, SWT.PUSH);
 	    undo.setText("Undo");
 	    undo.setBounds(810, 10, 75, 30);
 	    
+	    // Redo button
 	    Button redo = new Button(upperComp, SWT.PUSH);
 	    redo.setText("Redo");
 	    redo.setBounds(810, 40, 75, 30);
 	    
+	    // Size combo
+	    Combo sizeCombo = new Combo(upperComp, SWT.PUSH);
+	    sizeCombo.setText("Size");
+	    String[] sizes = new String[12];
+	    sizes[0]  = "6";
+	    sizes[1]  = "8";
+	    sizes[2]  = "10";
+	    sizes[3]  = "12";
+	    sizes[4]  = "14";
+	    sizes[5]  = "16";
+	    sizes[6]  = "18";
+	    sizes[7]  = "20";
+	    sizes[8]  = "22";
+	    sizes[9]  = "24";
+	    sizes[10] = "26";
+	    sizes[11] = "28";
+	    sizeCombo.setItems(sizes);
+	    sizeCombo.setBounds(810, 70, 75, 40);
+	    sizeCombo.select(3);
+	    
+	    // Fonts combo
+	    Combo fontCombo = new Combo(upperComp, SWT.PUSH);
+	    fontCombo.setText("Font");
+	    String[] fonts = new String[12];
+	    fonts[0]  = "Helvetica";
+	    fonts[1]  = "Arial";
+	    fonts[2]  = "Verdana";
+	    fonts[3]  = "Tahoma";
+	    fonts[4]  = "Trebuchet MS";
+	    fonts[5]  = "Impact";
+	    fonts[6]  = "Gill Sans";
+	    fonts[7]  = "Times New Roman";
+	    fonts[8]  = "Georgia";
+	    fonts[9]  = "Palatino";
+	    fonts[10] = "Baskerville";
+	    fonts[11] = "Courier";
+	    fontCombo.setItems(fonts);  
+	    fontCombo.setBounds(810, 100, 75, 40);
+	    fontCombo.select(0);
+	    
+	    // Colors combo
+	    Combo colorsCombo = new Combo(upperComp, SWT.PUSH);
+	    colorsCombo.setText("Color");
+	    String[] colors = new String[8];
+	    colors[0] = "Black";
+	    colors[1] = "White";
+	    colors[2] = "Red";
+	    colors[3] = "Orange";
+	    colors[4] = "Yellow";
+	    colors[5] = "Green";
+	    colors[6] = "Blue";
+	    colors[7] = "Purple";
+	    colorsCombo.setItems(colors);
+	    colorsCombo.setBounds(810, 130, 75, 40);
+	    colorsCombo.select(0);
 	    
 	    
 	    // - - - - - Interface for adding a image - - - - - //
@@ -240,7 +307,7 @@ public class LilLexiUI
         Button submitRectangle = new Button(addRectangleShell, SWT.PUSH);
         submitRectangle.setText("Submit");
         
-        
+        // Selection listener for exiting the program
 	    fileExitItem.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		shell.close();
@@ -251,31 +318,40 @@ public class LilLexiUI
 	    		display.dispose();
 	    	}
 	    });
+	    
+	    // Selection listener for saving the file
 	    fileSaveItem.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {
 	    	}	    		
 	    });
-
+	    
+	    // Selection listener for accessing help menu
 	    helpGetHelpItem.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {
 	    	}	    		
 	    });	
+	    
+	    // Selection listener for adding an image to the document
 	    insertImageItem.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		addImageShell.open();
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
+	    
+	    // Selection listener for adding a rectangle to the document
 	    insertRectItem.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		addRectangleShell.open();
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
+	    
+	    // Selection listener for submitting an image
 	    submitImage.addSelectionListener(new SelectionListener() {
         	public void widgetSelected(SelectionEvent event) {
         		String imageToAdd = imagesCombo.getText();
@@ -284,21 +360,60 @@ public class LilLexiUI
         	}
         	public void widgetDefaultSelected(SelectionEvent event) {}
         });
+	    
+	    // Selection listener for submitting a rectangle
 	    submitRectangle.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
+	    
+	    // Selection listener for use of the undo button
 	    undo.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		lexiControl.undo();
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
+	    
+	    // Selection listener for use of the redo button
 	    redo.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		lexiControl.redo();
+	    	}
+	    	public void widgetDefaultSelected(SelectionEvent event) {}
+	    });
+	    
+	    // Selection listener for using a new font size
+	    sizeCombo.addSelectionListener(new SelectionListener() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		int size = Integer.parseInt(sizeCombo.getText());
+	    		currentDoc.setCurrSize(size);
+	    		canvas.redraw();
+	    		updateUI();
+	    	}
+	    	public void widgetDefaultSelected(SelectionEvent event) {}
+	    });
+	    
+	    // Selection listener for using a new font
+	    fontCombo.addSelectionListener(new SelectionListener() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		String font = fontCombo.getText();
+	    		currentDoc.setCurrFont(font);
+	    		canvas.redraw();
+	    		updateUI();
+	    	}
+	    	public void widgetDefaultSelected(SelectionEvent event) {}
+	    });
+	    
+	    // Selection listener for using a new color
+	    colorsCombo.addSelectionListener(new SelectionListener() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		String color = colorsCombo.getText();
+	    		currentDoc.setCurrColor(color);
+	    		canvas.redraw();
+	    		updateUI();
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
@@ -340,5 +455,34 @@ public class LilLexiUI
 	 * setController
 	 */
 	public void setController(LilLexiControl lc) { lexiControl = lc; }
+	
+	public int getColorCode(String color) {
+		int colorAttribute = -1;
+	    if (color.equals("Black")) {
+	    	colorAttribute = SWT.COLOR_BLACK;
+	    }
+	    else if (color.equals("White")) {
+	    	colorAttribute = SWT.COLOR_WHITE;
+	    }
+	    else if (color.equals("Red")) {
+	    	colorAttribute = SWT.COLOR_RED;
+	    }
+	    else if (color.equals("Orange")) {
+	    	colorAttribute = SWT.COLOR_TITLE_BACKGROUND;
+	    }
+	    else if (color.equals("Yellow")) {
+	    	colorAttribute = SWT.COLOR_YELLOW;
+	    }
+	    else if (color.equals("Green")) {
+	    	colorAttribute = SWT.COLOR_GREEN;
+	    }
+	    else if (color.equals("Blue")) {
+	    	colorAttribute = SWT.COLOR_BLUE;
+	    }
+	    else if (color.equals("Purple")) {
+	    	colorAttribute = SWT.COLOR_MAGENTA;
+	    }
+	    return colorAttribute;
+	}
 }
 
