@@ -77,6 +77,9 @@ public class LilLexiControl {
 	String getCurrEdgeMargin() {
 		return currEdgeMargin;
 	}
+	int getCurrIndex() {
+		return currentDoc.getCurrIndex();
+	}
 
 	/**
 	 * quitEditor  user quits

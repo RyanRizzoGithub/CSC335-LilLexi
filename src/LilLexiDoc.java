@@ -111,7 +111,7 @@ public class LilLexiDoc
 		}
 	}
 	
-	/* - - - - - - REDO - - - - - - - - - - - - - - - - - - - - - - - -
+	/* - - - - - - REDO - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for triggering the internal function
 	 * for the redo button. Here we "replace" whatever action was most
 	 * previously undone.
@@ -133,6 +133,12 @@ public class LilLexiDoc
 		}
 	}
 	
+	/* - - - - - - GET UI - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for returning the current user interface
+	 * object
+	 * 
+	 * @return ui, the LilLexiUI object
+	 */
 	public LilLexiUI getUI() {
 		return this.ui;
 	}
@@ -253,7 +259,11 @@ public class LilLexiDoc
 	 * @param i, the integer which represents the current index of the cursor
 	 */
 	public void setIndex(int i) {
-		index = i;
+		if (i >= glyphs.size()) {
+			i = glyphs.size() - 1;
+		} else {
+			index = i;
+		}
 	}
 }
 

@@ -119,16 +119,18 @@ public class LilLexiUI
         canvas.addMouseListener(new MouseListener() {
             public void mouseDown(MouseEvent e) {
             	System.out.println("mouseDown in canvas");
-            	System.out.println("x: " + e.x + "y: " + e.y);
+            	System.out.println("x: " + e.x + " y: " + e.y);
             	
             	
             	int index = ((e.x - sideMargins) / columnWidth) + (rowWidth * ((e.y - edgeMargins) / rowHeight));
             	List<Glyph> glyphs = currentDoc.getGlyphs();
             	glyphs.remove(currentDoc.getCurrIndex());
-            	if (index > glyphsLength) {
-            		index = glyphsLength;
-            	}
+            	//if (index > glyphsLength) {
+            	//	index = glyphsLength;
+            	//}
             	lexiControl.setIndex(index);
+            	index = lexiControl.getCurrIndex();
+            	System.out.println("Index: " + index);
             	glyphs.add(index, new Glyph('|', currentDoc.getCurrFont(), currentDoc.getCurrSize(), currentDoc.getCurrColor()));
             	canvas.redraw();
             	updateUI();
