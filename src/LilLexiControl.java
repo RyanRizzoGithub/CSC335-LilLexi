@@ -3,8 +3,12 @@
 /**
  * Controller
  */
-public class LilLexiControl 
-{
+public class LilLexiControl {	
+	private String currFont;
+	private String currColor;
+	private String currSideMargin;
+	private String currEdgeMargin;
+	private int currSize;
 	private LilLexiDoc currentDoc;
 
 	/**
@@ -12,6 +16,11 @@ public class LilLexiControl
 	 */
 	public LilLexiControl( LilLexiDoc doc ) {
 		this.currentDoc = doc;
+		currFont = currentDoc.getCurrFont();
+		currColor = currentDoc.getCurrColor();
+		currSize = currentDoc.getCurrSize();
+		currSideMargin = currentDoc.getCurrSideMargin();
+		currEdgeMargin = currentDoc.getCurrEdgeMargin();
 	}
 	
 	/**
@@ -37,6 +46,36 @@ public class LilLexiControl
 	
 	void setIndex(int i) {
 		currentDoc.setIndex(i);
+	}
+	void setCurrSize(int size) {
+		currSize = size;
+	}
+	void setCurrFont(String font) {
+		currFont = font;
+	}
+	void setCurrColor(String color) {
+		currColor = color;
+	}
+	void setCurrSideMargin(String margin) {
+		currSideMargin = margin;
+	}
+	void setCurrEdgeMargin(String margin) {
+		currEdgeMargin = margin;
+	}
+	int getCurrSize() {
+		return currSize;
+	}
+	String getCurrFont() {
+		return currFont;
+	}
+	String getCurrColor() {
+		return currColor;
+	}
+	String getCurrSideMargin() {
+		return currSideMargin;
+	}
+	String getCurrEdgeMargin() {
+		return currEdgeMargin;
 	}
 
 	/**

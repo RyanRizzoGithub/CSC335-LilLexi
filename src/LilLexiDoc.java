@@ -19,6 +19,8 @@ public class LilLexiDoc
 	private HashMap<Integer, Character> redoMemo;
 	private String currFont;
 	private String currColor;
+	private String currSideMargin;
+	private String currEdgeMargin;
 	private int currSize;
 	private int index;
 	
@@ -31,6 +33,8 @@ public class LilLexiDoc
 		undoMemo = new HashMap<Integer, Character>();
 		redoMemo = new HashMap<Integer, Character>();
 		index = 0;
+		currSideMargin = "1/2''";
+		currEdgeMargin = "1/2''";
 		currFont = "Courier";
 		currColor = "Black";
 		currSize = 12;
@@ -47,7 +51,11 @@ public class LilLexiDoc
 	 */
 	public void add(char c) {
 		// Add the character to the list
+		if (glyphs.size() > 0) {
+			glyphs.remove(index);
+		}
 		glyphs.add(index, new Glyph(c, currFont, currSize, currColor));
+		glyphs.add(index + 1, new Glyph('|', currFont, currSize, currColor));
 		
 		// Add the location & character to the undo tracker
 		undoMemo.put(index, c);
@@ -156,6 +164,16 @@ public class LilLexiDoc
 		return this.currSize;
 	}
 	
+	public String getCurrSideMargin() {
+		return this.currSideMargin;
+	}
+	public String getCurrEdgeMargin() {
+		return this.currEdgeMargin;
+	}
+	public int getCurrIndex() {
+		return this.index;
+	}
+	
 	/* - - - - - - SET CURR FONT - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for setting the current font value
 	 * 
@@ -183,6 +201,14 @@ public class LilLexiDoc
 	public void setCurrSize(int size) {
 		this.currSize = size;
 	}
+	
+	public void setCurrSideMargin(String size) {
+		this.currSideMargin = size;
+	}
+	public void setCurrEdgeMargin(String size) {
+		this.currEdgeMargin = size;
+	}
+	
 	
 	/**
 	 * gets

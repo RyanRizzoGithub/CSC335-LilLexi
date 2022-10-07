@@ -33,6 +33,11 @@ public class LilLexiUI
 	private Label statusLabel;
 	private Canvas canvas;	
 	private int glyphsLength;
+	private int columnWidth;
+	private int rowWidth;
+	private int rowHeight;
+	private int sideMargins;
+	private int edgeMargins;
 	
 	/*
 	 * Constructor
@@ -47,12 +52,17 @@ public class LilLexiUI
 		shell.setSize(900,900);
 		shell.setLayout( new GridLayout());	
 		glyphsLength = 0;
+		columnWidth = -1;
+		rowHeight = -1;
+		rowWidth = -1;
+		
 	}
 		
 	/**
 	 * start the editor
+	 * @throws InterruptedException 
 	 */
-	public void start()
+	public void start() throws InterruptedException
 	{	
 		//---- create widgets for the interface
 	    Composite upperComp = new Composite(shell, SWT.NO_FOCUS);
@@ -72,35 +82,53 @@ public class LilLexiUI
     		e.gc.setFont(font);
     		//TODO
     		
-    		String colorName = currentDoc.getCurrColor();
+    		String colorName = lexiControl.getCurrColor();
     		int colorCode = getColorCode(colorName);
     		Color color = display.getSystemColor(colorCode);
     		System.out.println(colorName + ", " + colorCode + ", " + color);
     		e.gc.setForeground(color);
     		
+    		String sideMarginString = lexiControl.getCurrSideMargin();
+    		sideMargins = getMarginCode(sideMarginString);
+    		
+    		String edgeMarginString = lexiControl.getCurrEdgeMargin();
+    		edgeMargins = getMarginCode(edgeMarginString);
+    		
+    		int fontSize = lexiControl.getCurrSize();
+    		columnWidth = fontSize - 4;
+    		rowWidth = (800 - (2 * sideMargins)) / (fontSize - 4);
+    		rowHeight = fontSize;
+    		
     		List<Glyph> glyphs = currentDoc.getGlyphs();
     		int column = 0; int row = 0;
-    		for (Glyph g: glyphs)
-    		{
-    			e.gc.drawString("" + g.getChar(), column, row + 10);    
-    			column = (column + 18) % (40*18);
-    			if (column == 0) row += 32;
+    		for (Glyph g: glyphs) {
+    			e.gc.drawString("" + g.getChar(), column + sideMargins, row + edgeMargins);  
+    			column = (column + columnWidth) % (rowWidth * columnWidth);
+    			if (column == 0) row += rowHeight;
     			System.out.println(g.getChar());
     		}
     		glyphsLength = glyphs.size();
+    		System.out.println();
 		});	
+		
+		
 		
         canvas.addMouseListener(new MouseListener() {
             public void mouseDown(MouseEvent e) {
             	System.out.println("mouseDown in canvas");
             	System.out.println("x: " + e.x + "y: " + e.y);
-            	// TODO: add variation for font sizes
-            	int index = (e.x/18) + (40 * (e.y/32));
-            	System.out.println(index);
+            	
+            	
+            	int index = ((e.x - sideMargins) / columnWidth) + (rowWidth * ((e.y - edgeMargins) / rowHeight));
+            	List<Glyph> glyphs = currentDoc.getGlyphs();
+            	glyphs.remove(currentDoc.getCurrIndex());
             	if (index > glyphsLength) {
             		index = glyphsLength;
             	}
             	lexiControl.setIndex(index);
+            	glyphs.add(index, new Glyph('|', currentDoc.getCurrFont(), currentDoc.getCurrSize(), currentDoc.getCurrColor()));
+            	canvas.redraw();
+            	updateUI();
             } 
             public void mouseUp(MouseEvent e) {} 
             public void mouseDoubleClick(MouseEvent e) {} 
@@ -179,7 +207,7 @@ public class LilLexiUI
 	    helpGetHelpItem = new MenuItem(helpMenu, SWT.PUSH);
 	    helpGetHelpItem.setText("Get Help");
 	    
-	    // - - - - - Sidebar Interface - - - - - - - - - - //
+	    // - - - - - Sidebar Interface - - - - - - - - - - - - - - - - - - //
 	    
 	    // Undo button
 	    Button undo = new Button(upperComp, SWT.PUSH);
@@ -247,8 +275,30 @@ public class LilLexiUI
 	    colorsCombo.setBounds(810, 130, 75, 40);
 	    colorsCombo.select(0);
 	    
+	    // Margin combos
+	    Combo sideMarginCombo = new Combo(upperComp, SWT.PUSH);
+	    sideMarginCombo.setText("Margin");
+	    String[] margins = new String[6];
+	    margins[0] = "0''";
+	    margins[1] = "1/4''";
+	    margins[2] = "1/2''";
+	    margins[3] = "3/4''";
+	    margins[4] = "1''";
+	    margins[5] = "1 1/2''";
+	    sideMarginCombo.setItems(margins);
+	    sideMarginCombo.setBounds(810, 160, 75, 40);
+	    sideMarginCombo.select(2);
 	    
-	    // - - - - - Interface for adding a image - - - - - //
+	    Combo edgeMarginCombo = new Combo(upperComp, SWT.PUSH);
+	    edgeMarginCombo.setText("Margin");
+	    edgeMarginCombo.setItems(margins);
+	    edgeMarginCombo.setBounds(810, 190, 75, 40);
+	    edgeMarginCombo.select(2);
+	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+	    
+	    
+	    
+	    // - - - - - Interface for adding a image - - - - - - - - - - - - - - //
 	    Shell addImageShell = new Shell(display);
 		addImageShell.setSize(600, 130);
 		
@@ -277,10 +327,11 @@ public class LilLexiUI
      
         Label imageLabel2 = new Label(addImageShell, SWT.NONE);
         imageLabel2.setText("NOTE: Please make sure any image you wish to add is inside './CSC252-A2-LilLexi/images'");
-	    
+	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
         
         
-        // - - - - - Interface for adding a rectangle - - - - - //
+        
+        // - - - - - Interface for adding a rectangle - - - - - - - - - - - //
         Shell addRectangleShell = new Shell(display);
         addRectangleShell.setSize(350, 10);
         addRectangleShell.setLayout(rowLayout);
@@ -306,6 +357,11 @@ public class LilLexiUI
         
         Button submitRectangle = new Button(addRectangleShell, SWT.PUSH);
         submitRectangle.setText("Submit");
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        
+        
+        
+        // - - - - - - Selection Listeners - - - - - - - - - - - - - - - - //
         
         // Selection listener for exiting the program
 	    fileExitItem.addSelectionListener(new SelectionListener() {
@@ -389,7 +445,7 @@ public class LilLexiUI
 	    sizeCombo.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		int size = Integer.parseInt(sizeCombo.getText());
-	    		currentDoc.setCurrSize(size);
+	    		lexiControl.setCurrSize(size);
 	    		canvas.redraw();
 	    		updateUI();
 	    	}
@@ -400,7 +456,7 @@ public class LilLexiUI
 	    fontCombo.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		String font = fontCombo.getText();
-	    		currentDoc.setCurrFont(font);
+	    		lexiControl.setCurrFont(font);
 	    		canvas.redraw();
 	    		updateUI();
 	    	}
@@ -411,13 +467,35 @@ public class LilLexiUI
 	    colorsCombo.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		String color = colorsCombo.getText();
-	    		currentDoc.setCurrColor(color);
+	    		lexiControl.setCurrColor(color);
 	    		canvas.redraw();
 	    		updateUI();
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
 	    
+	    // Selection listener for using a new side margin size
+	    sideMarginCombo.addSelectionListener(new SelectionListener() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		String sideMarginSize = sideMarginCombo.getText();
+	    		lexiControl.setCurrSideMargin(sideMarginSize);
+	    		canvas.redraw();
+	    		updateUI();
+	    	}
+	    	public void widgetDefaultSelected(SelectionEvent event) {}
+	    });
+	    
+	    // Selection listener for using a new edge margin size
+	    edgeMarginCombo.addSelectionListener(new SelectionListener() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		String edgeMarginSize = edgeMarginCombo.getText();
+	    		lexiControl.setCurrEdgeMargin(edgeMarginSize);
+	    		canvas.redraw();
+	    		updateUI();
+	    	}
+	    	public void widgetDefaultSelected(SelectionEvent event) {}
+	    });
+	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 	    
 	    
 	    
@@ -434,7 +512,8 @@ public class LilLexiUI
 		//---- event loop
 		shell.open();
 		while( !shell.isDisposed())
-			if(!display.readAndDispatch()){}
+			if(!display.readAndDispatch()) {		
+			}
 		display.dispose();
 	} 
 
@@ -483,6 +562,30 @@ public class LilLexiUI
 	    	colorAttribute = SWT.COLOR_MAGENTA;
 	    }
 	    return colorAttribute;
+	}
+	
+	public int getMarginCode(String margin) {
+		if (margin.equals("0''")) {
+			return 0;
+		}
+		else if (margin.equals("1/4''")) {
+			return 24;
+		}
+		else if (margin.equals("1/2''")) {
+			return 48;
+		}
+		else if (margin.equals("3/4''")) {
+			return 72;
+		}
+		else if (margin.equals("1''")) {
+			return 96;
+		}
+		else if (margin.equals("1 1/2''")) {
+			return 144;
+		}
+		else {
+			return 0;
+		}
 	}
 }
 
