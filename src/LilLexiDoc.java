@@ -40,14 +40,20 @@ public class LilLexiDoc
 		currSize = 12;
 	}
 	
-	/*
-	 * setUI
+	/* - - - - - - SET UI - - - - - - - - - - - - - - - - - - - - - - 
+	 * This function lets us set the user interface for this document
+	 * 
+	 * @param ui, the LilLexiUI object being used
 	 */
-	public void setUI(LilLexiUI ui) {this.ui = ui;}
+	public void setUI(LilLexiUI ui) {
+		this.ui = ui;
+	}
 
 	/* - - - - - - ADD - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for adding a single Glyph
 	 * to the document.
+	 * 
+	 * @param c, the character being added to the document
 	 */
 	public void add(char c) {
 		// Add the character to the list
@@ -127,17 +133,11 @@ public class LilLexiDoc
 		}
 	}
 	
-	/* - - - - - - SET INDEX - - - - - - - - - - - - - - - - - - - - - - - 
-	 * This function is responsible for setting the index (or the location
-	 * of the cursor), for use in the document
-	 * 
-	 * @param i, the integer which represents the current index of the cursor
-	 */
-	public void setIndex(int i) {
-		index = i;
+	public LilLexiUI getUI() {
+		return this.ui;
 	}
 	
-	/* - - - - - - GET CURR FONT - - - - - - - - - - - - - - - - - - - - - -
+	/* - - - - - - GET CURR FONT - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for returning the current font being used
 	 * 
 	 * @return currFont, the String which represents the font being used
@@ -164,17 +164,43 @@ public class LilLexiDoc
 		return this.currSize;
 	}
 	
+	/* - - - - - - GET CURR SIDE MARGIN - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for returning the current size of the side margins
+	 * 
+	 * @return currSideMargin, the int which represents the size of the side margins
+	 */
 	public String getCurrSideMargin() {
 		return this.currSideMargin;
 	}
+	
+	/* - - - - - - GET CURR EDGE MARGIN - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for returning the current size of the edge margins
+	 * 
+	 * @return currEdgeMargin, the int which represents the size of the edge margins
+	 */
 	public String getCurrEdgeMargin() {
 		return this.currEdgeMargin;
 	}
+	
+	/* - - - - - - GET CURR INDEX - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for returning the index of the cursor
+	 * 
+	 * @return index, the int which represents the location of the cursor
+	 */
 	public int getCurrIndex() {
 		return this.index;
 	}
 	
-	/* - - - - - - SET CURR FONT - - - - - - - - - - - - - - - - - - - - - - - - -
+	/* - - - - - - GET GLYPHS - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for returning the list of Glyphs on the document
+	 * 
+	 * @return glyphs, the list of Glyph objects
+	 */
+	public List<Glyph> getGlyphs(){
+		return glyphs;
+	}
+	
+	/* - - - - - - SET CURR FONT - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for setting the current font value
 	 * 
 	 * @param font, the String which represents the font we want to use
@@ -183,7 +209,7 @@ public class LilLexiDoc
 		this.currFont = font;
 	}
 	
-	/* - - - - - - SET CURR COLOR - - - - - - - - - - - - - - - - - - - - - - - - -
+	/* - - - - - - SET CURR COLOR - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	 * This function is responsible for setting the current color value
 	 * 
 	 * @param color, the String which represents the color we want to use
@@ -192,7 +218,7 @@ public class LilLexiDoc
 		this.currColor = color;
 	}
 	
-	/* - - - - - - SET CURR SIZE - - - - - - - - - - - - - - - - - - - - - - - - - -
+	/* - - - - - - SET CURR SIZE - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for setting the current font size value
 	 * 
 	 * @param size, the int which represents the font size we want to use
@@ -202,18 +228,33 @@ public class LilLexiDoc
 		this.currSize = size;
 	}
 	
+	/* - - - - - - SET CURR SIDE MARGIN - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for setting the current size of the side margins
+	 * 
+	 * @param size, the string which represents the size of the size margins
+	 */
 	public void setCurrSideMargin(String size) {
 		this.currSideMargin = size;
 	}
+	
+	/* - - - - - - SET CURR EDGE MARGIN - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for setting the current size of the edge margins
+	 * 
+	 * @param size, the string which represents the size of the edge margins
+	 */
 	public void setCurrEdgeMargin(String size) {
 		this.currEdgeMargin = size;
 	}
 	
-	
-	/**
-	 * gets
+	/* - - - - - - SET INDEX - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for setting the index (or the location
+	 * of the cursor), for use in the document
+	 * 
+	 * @param i, the integer which represents the current index of the cursor
 	 */
-	public List<Glyph> getGlyphs(){return glyphs;}
+	public void setIndex(int i) {
+		index = i;
+	}
 }
 
 
@@ -254,6 +295,14 @@ class Glyph
 	
 	public void setChar(char c) {
 		this.c = c;
+	}
+	
+	public void setFont(String font) {
+		this.font = font;
+	}
+	
+	public void setColor(String color) {
+		this.color = color;
 	}
 }
 
