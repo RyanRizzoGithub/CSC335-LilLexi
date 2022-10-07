@@ -14,6 +14,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Font;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -61,12 +62,14 @@ public class LilLexiUI
 	/**
 	 * start the editor
 	 * @throws InterruptedException 
+	 * @throws FileNotFoundException 
 	 */
-	public void start() throws InterruptedException
+	public void start() throws InterruptedException, FileNotFoundException
 	{	
 		//---- create widgets for the interface
 	    Composite upperComp = new Composite(shell, SWT.NO_FOCUS);
 	    Composite lowerComp = new Composite(shell, SWT.NO_FOCUS);
+	    LilLexiSpellCheck spellCheck = new LilLexiSpellCheck(currentDoc);
 	    
 	    //---- canvas for the document
 		canvas = new Canvas(upperComp, SWT.NONE);
@@ -220,7 +223,7 @@ public class LilLexiUI
 	    redo.setBounds(810, 40, 75, 30);
 	    
 	    // Size combo
-	    Combo sizeCombo = new Combo(upperComp, SWT.PUSH);
+	    Combo sizeCombo = new Combo(upperComp, SWT.DROP_DOWN);
 	    sizeCombo.setText("Size");
 	    String[] sizes = new String[12];
 	    sizes[0]  = "6";
@@ -240,7 +243,7 @@ public class LilLexiUI
 	    sizeCombo.select(3);
 	    
 	    // Fonts combo
-	    Combo fontCombo = new Combo(upperComp, SWT.PUSH);
+	    Combo fontCombo = new Combo(upperComp, SWT.DROP_DOWN);
 	    fontCombo.setText("Font");
 	    String[] fonts = new String[12];
 	    fonts[0]  = "Helvetica";
@@ -260,7 +263,7 @@ public class LilLexiUI
 	    fontCombo.select(0);
 	    
 	    // Colors combo
-	    Combo colorsCombo = new Combo(upperComp, SWT.PUSH);
+	    Combo colorsCombo = new Combo(upperComp, SWT.DROP_DOWN);
 	    colorsCombo.setText("Color");
 	    String[] colors = new String[8];
 	    colors[0] = "Black";
@@ -276,7 +279,7 @@ public class LilLexiUI
 	    colorsCombo.select(0);
 	    
 	    // Margin combos
-	    Combo sideMarginCombo = new Combo(upperComp, SWT.PUSH);
+	    Combo sideMarginCombo = new Combo(upperComp, SWT.DROP_DOWN);
 	    sideMarginCombo.setText("Margin");
 	    String[] margins = new String[6];
 	    margins[0] = "0''";
@@ -289,11 +292,15 @@ public class LilLexiUI
 	    sideMarginCombo.setBounds(810, 160, 75, 40);
 	    sideMarginCombo.select(2);
 	    
-	    Combo edgeMarginCombo = new Combo(upperComp, SWT.PUSH);
+	    Combo edgeMarginCombo = new Combo(upperComp, SWT.DROP_DOWN);
 	    edgeMarginCombo.setText("Margin");
 	    edgeMarginCombo.setItems(margins);
 	    edgeMarginCombo.setBounds(810, 190, 75, 40);
 	    edgeMarginCombo.select(2);
+	    
+	    Button activateSpellCheck = new Button(upperComp, SWT.PUSH);
+	    activateSpellCheck.setText("Spell Check");
+	    activateSpellCheck.setBounds(810, 220, 75, 40);
 	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 	    
 	    
@@ -358,6 +365,17 @@ public class LilLexiUI
         Button submitRectangle = new Button(addRectangleShell, SWT.PUSH);
         submitRectangle.setText("Submit");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+        
+        
+        
+        // - - - - - - Interface for spell check - - - - - - - - - - - - - //
+        Shell spellCheckShell = new Shell(display);
+        spellCheckShell.setLayout(rowLayout);
+        spellCheckShell.setSize(400, 100 + (10 * spellCheck.getErrors().size()));
+        
+        Label spellCheckInfo = new Label(spellCheckShell, SWT.NONE);
+        String spellCheckInfoText = spellCheck.toString();
+        spellCheckInfo.setText(spellCheckInfoText);
         
         
         
@@ -495,6 +513,19 @@ public class LilLexiUI
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
+	    
+	    // Selection listener for using spell check
+	    activateSpellCheck.addSelectionListener(new SelectionListener() {
+	    	public void widgetSelected(SelectionEvent event) {
+	    		spellCheck.checkWords();
+	    		String spellCheckInfoText = spellCheck.toString();
+	    		spellCheckInfo.setText(spellCheckInfoText);
+	    		spellCheckShell.setSize(400, 100 + (14 * spellCheck.getErrors().size()));
+	    		spellCheckShell.open();
+	    	}
+	    	public void widgetDefaultSelected(SelectionEvent event) {}
+	    });
+	    
 	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 	    
 	    
@@ -586,6 +617,10 @@ public class LilLexiUI
 		else {
 			return 0;
 		}
+	}
+	
+	public int getRowWidth() {
+		return rowWidth;
 	}
 }
 
