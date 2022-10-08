@@ -25,8 +25,8 @@ import java.util.List;
  * METHODS:
  * 
  */
-public class LilLexiUI
-{
+public class LilLexiUI {
+	private String[][] images;
 	private LilLexiDoc currentDoc;
 	private LilLexiControl lexiControl;
 	private Display display;
@@ -53,6 +53,15 @@ public class LilLexiUI
 		columnWidth = -1;
 		rowHeight = -1;
 		rowWidth = -1;	
+		
+		images = new String[100][3];
+		for (int i=0; i<100; i++) {
+			String[] temp = new String[3];
+			temp[0] = "";
+			temp[1] = "";
+			temp[2] = "";
+			images[i] = temp;
+		}
 	}
 		
 	/**
@@ -87,6 +96,13 @@ public class LilLexiUI
     		Color color = display.getSystemColor(colorCode);
     		System.out.println(colorName + ", " + colorCode + ", " + color);
     		e.gc.setForeground(color);
+    		
+    		for (int i=0; i<images.length; i++) {
+    			if (images[i][0] != "") {
+    				Image image = new Image(display, images[i][0]);
+    				e.gc.drawImage(image, Integer.parseInt(images[i][1]), Integer.parseInt(images[i][2]));
+    			}
+    		}
     		
     		String sideMarginString = lexiControl.getCurrSideMargin();
     		sideMargins = getMarginCode(sideMarginString);
@@ -143,7 +159,7 @@ public class LilLexiUI
         	}
         	public void keyReleased(KeyEvent e) {}
         });
-
+        
 		Slider slider = new Slider (canvas, SWT.VERTICAL);
 		Rectangle clientArea = canvas.getClientArea ();
 		slider.setBounds (clientArea.width - 40, clientArea.y + 10, 32, clientArea.height);
@@ -303,27 +319,35 @@ public class LilLexiUI
 	    
 	    // - - - - - Interface for adding a image - - - - - - - - - - - - - - //
 	    Shell addImageShell = new Shell(display);
-		addImageShell.setSize(600, 130);
+		addImageShell.setSize(325, 310);
 		
-		RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL);
-        rowLayout.marginLeft = 10;
-        rowLayout.marginTop = 10;
-        rowLayout.spacing = 15;
-        addImageShell.setLayout(rowLayout);
+		Composite imageUpperComp = new Composite(addImageShell, SWT.NONE);
+		Composite imageLowerComp = new Composite(addImageShell, SWT.NONE);
 		
-        Label imageLabel1 = new Label(addImageShell, SWT.NONE);
-        imageLabel1.setText("Image name: ");
+		GridLayout gridLayout = new GridLayout();
+        gridLayout.marginLeft = 10;
+        gridLayout.marginTop = 10;
+        gridLayout.numColumns = 2;
+        gridLayout.makeColumnsEqualWidth = true;
+        addImageShell.setLayout(gridLayout);
         
-        Combo imagesCombo = new Combo(addImageShell, SWT.DROP_DOWN);
+        imageUpperComp.setLayout(gridLayout);
+        imageLowerComp.setLayout(new RowLayout(SWT.VERTICAL));
+        
+        imageUpperComp.setBounds(0, 0, 400, 400);
+        imageLowerComp.setBounds(0, 300, 400, 100);
+
+        addImageShell.setLayout(new RowLayout(SWT.VERTICAL));
+        
+       
         File folder = new File("/Users/ryanrizzo/eclipse-workspace/CSC335-A2-LilLexi/images");
         File[] listOfFiles = folder.listFiles();
-        String[] images = new String[listOfFiles.length];
+        String[] imagesPath = new String[listOfFiles.length];
         String[] imageNames = new String[listOfFiles.length];
         for (int i = 0; i < listOfFiles.length; i++) {
-        	images[i] = listOfFiles[i].toString();
-        	imageNames[i] = images[i].substring(60);
+        	imagesPath[i] = listOfFiles[i].toString();
+        	imageNames[i] = imagesPath[i].substring(60);
         }
-        imagesCombo.setItems(imageNames);
         
         String[] imageSizeOptions = new String[8];
         imageSizeOptions[0] = "4";
@@ -352,35 +376,45 @@ public class LilLexiUI
         imageLocationOptions[13] = "700";
         imageLocationOptions[14] = "750";
         
-        Label imageWidth = new Label(addImageShell, SWT.NONE);
+        Label imageName = new Label(imageUpperComp, SWT.NONE);
+        imageName.setText("Image name: \n");
+        imageName.setBounds(20, 0, 40, 10);
+        
+        Combo imagesCombo = new Combo(imageUpperComp, SWT.DROP_DOWN);
+        imagesCombo.setItems(imageNames);
+        imageName.setBounds(40, 0, 40, 10);
+        
+        Label imageWidth = new Label(imageUpperComp, SWT.NONE);
         imageWidth.setText("Width: ");
         
-        Combo imageWidthCombo = new Combo(addImageShell, SWT.DROP_DOWN);
+        Combo imageWidthCombo = new Combo(imageUpperComp, SWT.DROP_DOWN);
         imageWidthCombo.setItems(imageSizeOptions);
         
-        Label imageHeight = new Label(addImageShell, SWT.NONE);
-        imageHeight.setText("Height: ");
+        Label imageHeight = new Label(imageUpperComp, SWT.NONE);
+        imageHeight.setText("Height: \n");
+        imageName.setBounds(20, 60, 40, 10);
         
-        Combo imageHeightCombo = new Combo(addImageShell, SWT.DROP_DOWN);
+        Combo imageHeightCombo = new Combo(imageUpperComp, SWT.DROP_DOWN);
         imageHeightCombo.setItems(imageSizeOptions);
         
-        Label imageX = new Label(addImageShell, SWT.NONE);
-        imageX.setText("x: ");
+        Label imageX = new Label(imageUpperComp, SWT.NONE);
+        imageX.setText("x: "); 
         
-        Combo imageXcombo = new Combo(addImageShell, SWT.NONE);
-        imageXcombo.setItems(imageLocationOptions);
+        Combo imageXcombo = new Combo(imageUpperComp, SWT.NONE);
+        imageXcombo.setItems(imageLocationOptions);  
         
-        Label imageY = new Label(addImageShell, SWT.NONE);
+        Label imageY = new Label(imageUpperComp, SWT.NONE);
         imageY.setText("y: ");
         
-        Combo imageYcombo = new Combo(addImageShell, SWT.NONE);
-        imageYcombo.setItems(imageLocationOptions);
+        Combo imageYcombo = new Combo(imageUpperComp, SWT.NONE);
+        imageYcombo.setItems(imageLocationOptions);   
         
-        Button submitImage = new Button(addImageShell, SWT.PUSH);
+        Label imageWarning = new Label(imageLowerComp, SWT.NONE);
+        imageWarning.setText("NOTE: Please make sure any image you wish to add\n is inside './CSC252-A2-LilLexi/images'");
+        imageWarning.setLocation(0, 350);
+        
+        Button submitImage = new Button(imageLowerComp, SWT.PUSH);
         submitImage.setText("Submit");
-     
-        Label imageLabel2 = new Label(addImageShell, SWT.NONE);
-        imageLabel2.setText("NOTE: Please make sure any image you wish to add is inside './CSC252-A2-LilLexi/images'");
 	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
         
         
@@ -388,7 +422,7 @@ public class LilLexiUI
         // - - - - - Interface for adding a rectangle - - - - - - - - - - - //
         Shell addRectangleShell = new Shell(display);
         addRectangleShell.setSize(350, 10);
-        addRectangleShell.setLayout(rowLayout);
+        addRectangleShell.setLayout(gridLayout);
         
         String[] widths = new String[16];
         String[] heights = new String[16];
@@ -416,6 +450,7 @@ public class LilLexiUI
         
         
         // - - - - - - Interface for spell check - - - - - - - - - - - - - //
+        RowLayout rowLayout = new RowLayout(SWT.NONE);
         Shell spellCheckShell = new Shell(display);
         spellCheckShell.setLayout(rowLayout);
         spellCheckShell.setSize(400, 100 + (10 * spellCheck.getErrors().size()));
@@ -471,13 +506,30 @@ public class LilLexiUI
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
-	    
 	    // Selection listener for submitting an image
 	    submitImage.addSelectionListener(new SelectionListener() {
         	public void widgetSelected(SelectionEvent event) {
         		String imageToAdd = imagesCombo.getText();
-        		imageToAdd = "./images/" + imageToAdd; 
+        		imageToAdd = "/Users/ryanrizzo/eclipse-workspace/CSC335-A2-LilLexi/images/" + imageToAdd; 
+        		
+        		
+        		int imageWidth = Integer.parseInt(imageWidthCombo.getText());
+        		int imageHeight = Integer.parseInt(imageHeightCombo.getText());
+        		String imageX = imageXcombo.getText();
+        		String imageY = imageYcombo.getText();
+        		
+        		int index = 0;
+        		while (images[index][0] != "") {
+        			index++;
+        		}
+        		String[] imageInfo = new String[3];
+        		imageInfo[0] = imageToAdd;
+        		imageInfo[1] = imageX;
+        		imageInfo[2] = imageY;
+        		images[index] = imageInfo;
         		addImageShell.close();
+        		canvas.redraw();
+        		updateUI();
         	}
         	public void widgetDefaultSelected(SelectionEvent event) {}
         });
@@ -573,7 +625,7 @@ public class LilLexiUI
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
-	    
+	   
 	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 	    
 	    
