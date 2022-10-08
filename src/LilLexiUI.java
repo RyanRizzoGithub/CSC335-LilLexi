@@ -27,6 +27,7 @@ import java.util.List;
  */
 public class LilLexiUI {
 	private String[][] images;
+	private String[][] rects;
 	private LilLexiDoc currentDoc;
 	private LilLexiControl lexiControl;
 	private Display display;
@@ -55,12 +56,21 @@ public class LilLexiUI {
 		rowWidth = -1;	
 		
 		images = new String[100][3];
+		rects = new String[100][5];
 		for (int i=0; i<100; i++) {
-			String[] temp = new String[3];
-			temp[0] = "";
-			temp[1] = "";
-			temp[2] = "";
-			images[i] = temp;
+			String[] imageTemp = new String[3];
+			imageTemp[0] = "";
+			imageTemp[1] = "";
+			imageTemp[2] = "";
+			images[i] = imageTemp;
+			
+			String[] rectTemp = new String[5];
+			rectTemp[0] = "";
+			rectTemp[1] = "";
+			rectTemp[2] = "";
+			rectTemp[3] = "";
+			rectTemp[4] = "";
+			rects[i] = rectTemp;
 		}
 	}
 		
@@ -97,10 +107,24 @@ public class LilLexiUI {
     		System.out.println(colorName + ", " + colorCode + ", " + color);
     		e.gc.setForeground(color);
     		
+    		// Draw images
     		for (int i=0; i<images.length; i++) {
     			if (images[i][0] != "") {
     				Image image = new Image(display, images[i][0]);
     				e.gc.drawImage(image, Integer.parseInt(images[i][1]), Integer.parseInt(images[i][2]));
+    			}
+    		}
+    		
+    		// Draw rectangles
+    		for (int i=0; i<rects.length; i++) {
+    			if (rects[i][0] != "") {
+    				
+    				int rectX = Integer.parseInt(rects[i][0]);
+    				int rectY = Integer.parseInt(rects[i][1]);
+    				int rectWidth = Integer.parseInt(rects[i][2]);
+    				int rectHeight = Integer.parseInt(rects[i][3]);
+    				Rectangle rectangle = new Rectangle(rectX, rectY, rectWidth, rectHeight);
+    				e.gc.drawRectangle(rectangle);   				
     			}
     		}
     		
@@ -235,7 +259,7 @@ public class LilLexiUI {
 	    redo.setBounds(810, 40, 75, 30);
 	    
 	    // Size combo
-	    Combo sizeCombo = new Combo(upperComp, SWT.DROP_DOWN);
+	    Combo sizeCombo = new Combo(upperComp, SWT.PUSH);
 	    sizeCombo.setText("Size");
 	    String[] sizes = new String[12];
 	    sizes[0]  = "6";
@@ -255,7 +279,7 @@ public class LilLexiUI {
 	    sizeCombo.select(3);
 	    
 	    // Fonts combo
-	    Combo fontCombo = new Combo(upperComp, SWT.DROP_DOWN);
+	    Combo fontCombo = new Combo(upperComp, SWT.PUSH);
 	    fontCombo.setText("Font");
 	    String[] fonts = new String[12];
 	    fonts[0]  = "Helvetica";
@@ -275,7 +299,7 @@ public class LilLexiUI {
 	    fontCombo.select(0);
 	    
 	    // Colors combo
-	    Combo colorsCombo = new Combo(upperComp, SWT.DROP_DOWN);
+	    Combo colorsCombo = new Combo(upperComp, SWT.PUSH);
 	    colorsCombo.setText("Color");
 	    String[] colors = new String[8];
 	    colors[0] = "Black";
@@ -291,7 +315,7 @@ public class LilLexiUI {
 	    colorsCombo.select(0);
 	    
 	    // Margin combos
-	    Combo sideMarginCombo = new Combo(upperComp, SWT.DROP_DOWN);
+	    Combo sideMarginCombo = new Combo(upperComp, SWT.PUSH);
 	    sideMarginCombo.setText("Margin");
 	    String[] margins = new String[6];
 	    margins[0] = "0''";
@@ -304,7 +328,7 @@ public class LilLexiUI {
 	    sideMarginCombo.setBounds(810, 160, 75, 40);
 	    sideMarginCombo.select(2);
 	    
-	    Combo edgeMarginCombo = new Combo(upperComp, SWT.DROP_DOWN);
+	    Combo edgeMarginCombo = new Combo(upperComp, SWT.PUSH);
 	    edgeMarginCombo.setText("Margin");
 	    edgeMarginCombo.setItems(margins);
 	    edgeMarginCombo.setBounds(810, 190, 75, 40);
@@ -380,33 +404,33 @@ public class LilLexiUI {
         imageName.setText("Image name: \n");
         imageName.setBounds(20, 0, 40, 10);
         
-        Combo imagesCombo = new Combo(imageUpperComp, SWT.DROP_DOWN);
+        Combo imagesCombo = new Combo(imageUpperComp, SWT.PUSH);
         imagesCombo.setItems(imageNames);
         imageName.setBounds(40, 0, 40, 10);
         
         Label imageWidth = new Label(imageUpperComp, SWT.NONE);
         imageWidth.setText("Width: ");
         
-        Combo imageWidthCombo = new Combo(imageUpperComp, SWT.DROP_DOWN);
+        Combo imageWidthCombo = new Combo(imageUpperComp, SWT.PUSH);
         imageWidthCombo.setItems(imageSizeOptions);
         
         Label imageHeight = new Label(imageUpperComp, SWT.NONE);
         imageHeight.setText("Height: \n");
         imageName.setBounds(20, 60, 40, 10);
         
-        Combo imageHeightCombo = new Combo(imageUpperComp, SWT.DROP_DOWN);
+        Combo imageHeightCombo = new Combo(imageUpperComp, SWT.PUSH);
         imageHeightCombo.setItems(imageSizeOptions);
         
         Label imageX = new Label(imageUpperComp, SWT.NONE);
         imageX.setText("x: "); 
         
-        Combo imageXcombo = new Combo(imageUpperComp, SWT.NONE);
+        Combo imageXcombo = new Combo(imageUpperComp, SWT.PUSH);
         imageXcombo.setItems(imageLocationOptions);  
         
         Label imageY = new Label(imageUpperComp, SWT.NONE);
         imageY.setText("y: ");
         
-        Combo imageYcombo = new Combo(imageUpperComp, SWT.NONE);
+        Combo imageYcombo = new Combo(imageUpperComp, SWT.PUSH);
         imageYcombo.setItems(imageLocationOptions);   
         
         Label imageWarning = new Label(imageLowerComp, SWT.NONE);
@@ -420,31 +444,43 @@ public class LilLexiUI {
         
         
         // - - - - - Interface for adding a rectangle - - - - - - - - - - - //
-        Shell addRectangleShell = new Shell(display);
-        addRectangleShell.setSize(350, 10);
-        addRectangleShell.setLayout(gridLayout);
+        Shell addRectShell = new Shell(display);
+		addRectShell.setSize(280, 260);
+		
+		Composite rectUpperComp = new Composite(addRectShell, SWT.NONE);
+		Composite rectLowerComp = new Composite(addRectShell, SWT.NONE);
+        addRectShell.setLayout(gridLayout);
         
-        String[] widths = new String[16];
-        String[] heights = new String[16];
-        for (int i=1; i <= 16; i++) {
-        	widths[i-1] = String.valueOf(i);
-        	heights[i-1] = String.valueOf(i);
-        }
+        rectUpperComp.setLayout(gridLayout);
+        rectLowerComp.setLayout(new RowLayout(SWT.VERTICAL));
         
-        Label addRectangleWidth = new Label(addRectangleShell, SWT.NONE);
-        addRectangleWidth.setText("Width: ");
-         
-        Combo widthCombo = new Combo(addRectangleShell, SWT.DROP_DOWN);
-        widthCombo.setItems(widths);
+        rectUpperComp.setBounds(0, 0, 400, 400);
+        rectLowerComp.setBounds(0, 300, 400, 100);
+
+        addRectShell.setLayout(new RowLayout(SWT.VERTICAL));
         
-        Label addRectangleHeight = new Label(addRectangleShell, SWT.NONE);
-        addRectangleHeight.setText("Height: ");
+        Label rectWidth = new Label(rectUpperComp, SWT.NONE);
+        rectWidth.setText("Width: ");
+        Combo rectWidthCombo = new Combo(rectUpperComp, SWT.PUSH);
+        rectWidthCombo.setItems(imageSizeOptions);
         
-        Combo heightCombo = new Combo(addRectangleShell, SWT.DROP_DOWN);
-        heightCombo.setItems(heights);
+        Label rectHeight = new Label(rectUpperComp, SWT.NONE);
+        rectHeight.setText("Height: \n");       
+        Combo rectHeightCombo = new Combo(rectUpperComp, SWT.PUSH);
+        rectHeightCombo.setItems(imageSizeOptions);
         
-        Button submitRectangle = new Button(addRectangleShell, SWT.PUSH);
-        submitRectangle.setText("Submit");
+        Label rectX = new Label(rectUpperComp, SWT.NONE);
+        rectX.setText("x: ");         
+        Combo rectXcombo = new Combo(rectUpperComp, SWT.PUSH);
+        rectXcombo.setItems(imageLocationOptions);  
+        
+        Label rectY = new Label(rectUpperComp, SWT.NONE);
+        rectY.setText("y: ");        
+        Combo rectYcombo = new Combo(rectUpperComp, SWT.PUSH);
+        rectYcombo.setItems(imageLocationOptions);   
+        
+        Button submitRect = new Button(rectLowerComp, SWT.PUSH);
+        submitRect.setText("Submit");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
         
         
@@ -502,7 +538,7 @@ public class LilLexiUI {
 	    // Selection listener for adding a rectangle to the document
 	    insertRectItem.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		addRectangleShell.open();
+	    		addRectShell.open();
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
@@ -535,9 +571,27 @@ public class LilLexiUI {
         });
 	    
 	    // Selection listener for submitting a rectangle
-	    submitRectangle.addSelectionListener(new SelectionListener() {
+	    submitRect.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		
+	    		String rectWidth = rectWidthCombo.getText();
+        		String rectHeight = rectHeightCombo.getText();
+        		String rectX = rectXcombo.getText();
+        		String rectY = rectYcombo.getText();
+        		
+        		int index = 0;
+        		while (rects[index][0] != "") {
+        			index++;
+        		}
+        		String[] rectInfo = new String[4];
+        		rectInfo[0] = rectX;
+        		rectInfo[1] = rectY;
+        		rectInfo[2] = rectWidth;
+        		rectInfo[3] = rectHeight;
+        		rects[index] = rectInfo;
+        		System.out.println(rects[0]);
+        		addRectShell.close();
+        		canvas.redraw();
+        		updateUI();
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
