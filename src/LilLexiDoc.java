@@ -30,6 +30,8 @@ public class LilLexiDoc
 	 */
 	public LilLexiDoc() {
 		glyphs = new ArrayList<Glyph>();
+		glyphs.add(new Glyph('|', currFont, currSize, currColor));
+
 		undoMemo = new HashMap<Integer, Character>();
 		redoMemo = new HashMap<Integer, Character>();
 		index = 0;

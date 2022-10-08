@@ -33,7 +33,6 @@ public class LilLexiUI
 	private Shell shell;
 	private Label statusLabel;
 	private Canvas canvas;	
-	private int glyphsLength;
 	private int columnWidth;
 	private int rowWidth;
 	private int rowHeight;
@@ -43,8 +42,7 @@ public class LilLexiUI
 	/*
 	 * Constructor
 	 */
-	public LilLexiUI() 
-	{
+	public LilLexiUI() {
 		//---- create the window and the shell
 		Display.setAppName("Lil Lexi");
 		display = new Display();  
@@ -52,11 +50,9 @@ public class LilLexiUI
 	    shell.setText("Lil Lexi");
 		shell.setSize(900,900);
 		shell.setLayout( new GridLayout());	
-		glyphsLength = 0;
 		columnWidth = -1;
 		rowHeight = -1;
-		rowWidth = -1;
-		
+		rowWidth = -1;	
 	}
 		
 	/**
@@ -81,9 +77,10 @@ public class LilLexiUI
 			e.gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE)); 
             e.gc.fillRectangle(rect.x, rect.y, rect.width, rect.height);
             e.gc.setForeground(display.getSystemColor(SWT.COLOR_BLUE)); 
-    		Font font = new Font(display, currentDoc.getCurrFont(), currentDoc.getCurrSize(), SWT.BOLD );
+            // // // //
+    		Font font = new Font(display, currentDoc.getCurrFont(), currentDoc.getCurrSize(), SWT.NONE);
+    		System.out.println(currentDoc.getCurrSize());
     		e.gc.setFont(font);
-    		//TODO
     		
     		String colorName = lexiControl.getCurrColor();
     		int colorCode = getColorCode(colorName);
@@ -110,7 +107,6 @@ public class LilLexiUI
     			if (column == 0) row += rowHeight;
     			System.out.println(g.getChar());
     		}
-    		glyphsLength = glyphs.size();
     		System.out.println();
 		});	
 		
@@ -125,12 +121,9 @@ public class LilLexiUI
             	int index = ((e.x - sideMargins) / columnWidth) + (rowWidth * ((e.y - edgeMargins) / rowHeight));
             	List<Glyph> glyphs = currentDoc.getGlyphs();
             	glyphs.remove(currentDoc.getCurrIndex());
-            	//if (index > glyphsLength) {
-            	//	index = glyphsLength;
-            	//}
+
             	lexiControl.setIndex(index);
             	index = lexiControl.getCurrIndex();
-            	System.out.println("Index: " + index);
             	glyphs.add(index, new Glyph('|', currentDoc.getCurrFont(), currentDoc.getCurrSize(), currentDoc.getCurrColor()));
             	canvas.redraw();
             	updateUI();
@@ -211,6 +204,7 @@ public class LilLexiUI
 
 	    helpGetHelpItem = new MenuItem(helpMenu, SWT.PUSH);
 	    helpGetHelpItem.setText("Get Help");
+	    
 	    
 	    // - - - - - Sidebar Interface - - - - - - - - - - - - - - - - - - //
 	    
@@ -330,7 +324,58 @@ public class LilLexiUI
         	imageNames[i] = images[i].substring(60);
         }
         imagesCombo.setItems(imageNames);
-               
+        
+        String[] imageSizeOptions = new String[8];
+        imageSizeOptions[0] = "4";
+        imageSizeOptions[1] = "8";
+        imageSizeOptions[2] = "16";
+        imageSizeOptions[3] = "32";
+        imageSizeOptions[4] = "64";
+        imageSizeOptions[5] = "128";
+        imageSizeOptions[6] = "256";
+        imageSizeOptions[7] = "512";
+        
+        String[] imageLocationOptions = new String[15];
+        imageLocationOptions[0] = "50";
+        imageLocationOptions[1] = "100";
+        imageLocationOptions[2] = "150";
+        imageLocationOptions[3] = "200";
+        imageLocationOptions[4] = "250";
+        imageLocationOptions[5] = "300";
+        imageLocationOptions[6] = "350";
+        imageLocationOptions[7] = "400";
+        imageLocationOptions[8] = "450";
+        imageLocationOptions[9] = "500";
+        imageLocationOptions[10] = "550";
+        imageLocationOptions[11] = "600";
+        imageLocationOptions[12] = "650";
+        imageLocationOptions[13] = "700";
+        imageLocationOptions[14] = "750";
+        
+        Label imageWidth = new Label(addImageShell, SWT.NONE);
+        imageWidth.setText("Width: ");
+        
+        Combo imageWidthCombo = new Combo(addImageShell, SWT.DROP_DOWN);
+        imageWidthCombo.setItems(imageSizeOptions);
+        
+        Label imageHeight = new Label(addImageShell, SWT.NONE);
+        imageHeight.setText("Height: ");
+        
+        Combo imageHeightCombo = new Combo(addImageShell, SWT.DROP_DOWN);
+        imageHeightCombo.setItems(imageSizeOptions);
+        
+        Label imageX = new Label(addImageShell, SWT.NONE);
+        imageX.setText("x: ");
+        
+        Combo imageXcombo = new Combo(addImageShell, SWT.NONE);
+        imageXcombo.setItems(imageLocationOptions);
+        
+        Label imageY = new Label(addImageShell, SWT.NONE);
+        imageY.setText("y: ");
+        
+        Combo imageYcombo = new Combo(addImageShell, SWT.NONE);
+        imageYcombo.setItems(imageLocationOptions);
+        
         Button submitImage = new Button(addImageShell, SWT.PUSH);
         submitImage.setText("Submit");
      
@@ -465,6 +510,7 @@ public class LilLexiUI
 	    sizeCombo.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		int size = Integer.parseInt(sizeCombo.getText());
+	    		System.out.println("Size: " + size);
 	    		lexiControl.setCurrSize(size);
 	    		canvas.redraw();
 	    		updateUI();
