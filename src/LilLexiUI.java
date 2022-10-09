@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import javax.swing.SwingConstants;
+
 /**
  * PURPOSE:
  * This class is responsible for handling all of the user interface
@@ -49,7 +51,7 @@ public class LilLexiUI {
 		display = new Display();  
 		shell = new Shell(display);
 	    shell.setText("Lil Lexi");
-		shell.setSize(900,900);
+		shell.setSize(900,910);
 		shell.setLayout( new GridLayout());	
 		columnWidth = -1;
 		rowHeight = -1;
@@ -142,9 +144,16 @@ public class LilLexiUI {
     		List<Glyph> glyphs = currentDoc.getGlyphs();
     		int column = 0; int row = 0;
     		for (Glyph g: glyphs) {
-    			e.gc.drawString("" + g.getChar(), column + sideMargins, row + edgeMargins);  
-    			column = (column + columnWidth) % (rowWidth * columnWidth);
-    			if (column == 0) row += rowHeight;
+    			if (g.getChar() == 13) {
+    				row += rowHeight;
+    				column = 0;
+    			}
+    			else {
+    				e.gc.drawString("" + g.getChar(), column + sideMargins, row + edgeMargins);  
+    				column = (column + columnWidth) % (rowWidth * columnWidth);
+    				if (column == 0) row += rowHeight;
+    			}
+    			
     			System.out.println(g.getChar());
     		}
     		System.out.println();
@@ -258,6 +267,10 @@ public class LilLexiUI {
 	    redo.setText("Redo");
 	    redo.setBounds(810, 40, 75, 30);
 	    
+	    Label textSizeLabel = new Label(upperComp, SWT.NONE);
+	    textSizeLabel.setText("Text Size");
+	    textSizeLabel.setBounds(810, 100, 75, 15);
+	    
 	    // Size combo
 	    Combo sizeCombo = new Combo(upperComp, SWT.PUSH);
 	    sizeCombo.setText("Size");
@@ -275,8 +288,12 @@ public class LilLexiUI {
 	    sizes[10] = "26";
 	    sizes[11] = "28";
 	    sizeCombo.setItems(sizes);
-	    sizeCombo.setBounds(810, 70, 75, 40);
+	    sizeCombo.setBounds(810, 125, 75, 20);
 	    sizeCombo.select(3);
+	    
+	    Label fontLabel = new Label(upperComp, SWT.NONE);
+	    fontLabel.setText("Text Font");
+	    fontLabel.setBounds(810, 160, 75, 20);
 	    
 	    // Fonts combo
 	    Combo fontCombo = new Combo(upperComp, SWT.PUSH);
@@ -295,8 +312,12 @@ public class LilLexiUI {
 	    fonts[10] = "Baskerville";
 	    fonts[11] = "Courier";
 	    fontCombo.setItems(fonts);  
-	    fontCombo.setBounds(810, 100, 75, 40);
+	    fontCombo.setBounds(810, 185, 75, 20);
 	    fontCombo.select(0);
+	    
+	    Label colorLabel = new Label(upperComp, SWT.NONE);
+	    colorLabel.setText("Text Color");
+	    colorLabel.setBounds(810, 220, 75, 20);
 	    
 	    // Colors combo
 	    Combo colorsCombo = new Combo(upperComp, SWT.PUSH);
@@ -311,8 +332,12 @@ public class LilLexiUI {
 	    colors[6] = "Blue";
 	    colors[7] = "Purple";
 	    colorsCombo.setItems(colors);
-	    colorsCombo.setBounds(810, 130, 75, 40);
+	    colorsCombo.setBounds(810, 245, 75, 20);
 	    colorsCombo.select(0);
+	    
+	    Label sideMarginLabel = new Label(upperComp, SWT.NONE);
+	    sideMarginLabel.setText("L/R Margin");
+	    sideMarginLabel.setBounds(810, 280, 75, 20);
 	    
 	    // Margin combos
 	    Combo sideMarginCombo = new Combo(upperComp, SWT.PUSH);
@@ -325,18 +350,22 @@ public class LilLexiUI {
 	    margins[4] = "1''";
 	    margins[5] = "1 1/2''";
 	    sideMarginCombo.setItems(margins);
-	    sideMarginCombo.setBounds(810, 160, 75, 40);
+	    sideMarginCombo.setBounds(810, 305, 75, 20);
 	    sideMarginCombo.select(2);
+	    
+	    Label edgeMarginLabel = new Label(upperComp, SWT.NONE);
+	    edgeMarginLabel.setText("T/B Margin");
+	    edgeMarginLabel.setBounds(810, 340, 75, 20);
 	    
 	    Combo edgeMarginCombo = new Combo(upperComp, SWT.PUSH);
 	    edgeMarginCombo.setText("Margin");
 	    edgeMarginCombo.setItems(margins);
-	    edgeMarginCombo.setBounds(810, 190, 75, 40);
+	    edgeMarginCombo.setBounds(810, 365, 75, 20);
 	    edgeMarginCombo.select(2);
 	    
 	    Button activateSpellCheck = new Button(upperComp, SWT.PUSH);
 	    activateSpellCheck.setText("Spell Check");
-	    activateSpellCheck.setBounds(810, 220, 75, 40);
+	    activateSpellCheck.setBounds(805, 400, 90, 40);
 	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 	    
 	    
