@@ -47,6 +47,25 @@ public class LilLexiControl {
 	Glyph getChar() {
 		return currentDoc.getGlyphs().get(0);
 	}
+	public String[][] getImages(){
+		return currentDoc.getImages();
+	}
+	
+	public String[][] getRects(){
+		return currentDoc.getRects();
+	}
+	
+	public String[][] getLines(){
+		return currentDoc.getLines();
+	}
+	
+	public String[][] getCircles(){
+		return currentDoc.getCircles();
+	}
+	
+	public String[][] getTriangles(){
+		return currentDoc.getTriangles();
+	}
 	
 	void setIndex(int i) {
 		currentDoc.setIndex(i);
@@ -83,6 +102,21 @@ public class LilLexiControl {
 	}
 	int getCurrIndex() {
 		return currentDoc.getCurrIndex();
+	}
+	public void addImage(String[] imageInfo) {
+		currentDoc.addImage(imageInfo);
+	}
+	public void addRect(String[] rectInfo) {
+		currentDoc.addRect(rectInfo);
+	}
+	public void addLine(String[] lineInfo) {
+		currentDoc.addLine(lineInfo);
+	}
+	public void addCircle(String[] circleInfo) {
+		currentDoc.addCircle(circleInfo);
+	}
+	public void addTriangle(String[] triangleInfo) {
+		currentDoc.addTriangle(triangleInfo);
 	}
 
 	/**

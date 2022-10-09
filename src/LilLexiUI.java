@@ -10,14 +10,11 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Font;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import javax.swing.SwingConstants;
 
 /**
  * PURPOSE:
@@ -28,8 +25,6 @@ import javax.swing.SwingConstants;
  * 
  */
 public class LilLexiUI {
-	private String[][] images;
-	private String[][] rects;
 	private LilLexiDoc currentDoc;
 	private LilLexiControl lexiControl;
 	private Display display;
@@ -56,24 +51,6 @@ public class LilLexiUI {
 		columnWidth = -1;
 		rowHeight = -1;
 		rowWidth = -1;	
-		
-		images = new String[100][3];
-		rects = new String[100][5];
-		for (int i=0; i<100; i++) {
-			String[] imageTemp = new String[3];
-			imageTemp[0] = "";
-			imageTemp[1] = "";
-			imageTemp[2] = "";
-			images[i] = imageTemp;
-			
-			String[] rectTemp = new String[5];
-			rectTemp[0] = "";
-			rectTemp[1] = "";
-			rectTemp[2] = "";
-			rectTemp[3] = "";
-			rectTemp[4] = "";
-			rects[i] = rectTemp;
-		}
 	}
 		
 	/**
@@ -98,7 +75,7 @@ public class LilLexiUI {
 			e.gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE)); 
             e.gc.fillRectangle(rect.x, rect.y, rect.width, rect.height);
             e.gc.setForeground(display.getSystemColor(SWT.COLOR_BLUE)); 
-            // // // //
+
     		Font font = new Font(display, currentDoc.getCurrFont(), currentDoc.getCurrSize(), SWT.NONE);
     		System.out.println(currentDoc.getCurrSize());
     		e.gc.setFont(font);
@@ -106,10 +83,10 @@ public class LilLexiUI {
     		String colorName = lexiControl.getCurrColor();
     		int colorCode = getColorCode(colorName);
     		Color color = display.getSystemColor(colorCode);
-    		System.out.println(colorName + ", " + colorCode + ", " + color);
     		e.gc.setForeground(color);
     		
     		// Draw images
+    		String[][] images = lexiControl.getImages();
     		for (int i=0; i<images.length; i++) {
     			if (images[i][0] != "") {
     				Image image = new Image(display, images[i][0]);
@@ -118,18 +95,58 @@ public class LilLexiUI {
     		}
     		
     		// Draw rectangles
+    		String[][] rects = lexiControl.getRects();
     		for (int i=0; i<rects.length; i++) {
     			if (rects[i][0] != "") {
-    				
     				int rectX = Integer.parseInt(rects[i][0]);
     				int rectY = Integer.parseInt(rects[i][1]);
     				int rectWidth = Integer.parseInt(rects[i][2]);
     				int rectHeight = Integer.parseInt(rects[i][3]);
-    				Rectangle rectangle = new Rectangle(rectX, rectY, rectWidth, rectHeight);
-    				e.gc.drawRectangle(rectangle);   				
+    				Rectangle rectangle = new Rectangle(rectX, rectY, rectWidth, rectHeight); 	
+    				e.gc.drawRectangle(rectangle);
+    			}
+    		}
+    		// Draw lines
+    		String[][] lines = lexiControl.getLines();
+    		for (int i=0; i<lines.length; i++) {
+    			if (lines[i][0] != "") {
+    				int lineX1 = Integer.parseInt(lines[i][0]);
+    				int lineY1 = Integer.parseInt(lines[i][1]);
+    				int lineX2 = Integer.parseInt(lines[i][2]);
+    				int lineY2 = Integer.parseInt(lines[i][3]);
+    				e.gc.drawLine(lineX1, lineY1, lineX2, lineY2);
     			}
     		}
     		
+    		// Draw circles
+    		String[][] circles = lexiControl.getCircles();
+    		for (int i=0; i<circles.length; i++) {
+    			if (circles[i][0] != "" ) {
+    				int circleX = Integer.parseInt(circles[i][0]);
+    				int circleY = Integer.parseInt(circles[i][1]);
+    				int circleWidth = Integer.parseInt(circles[i][2]);
+    				int circleHeight = Integer.parseInt(circles[i][3]);
+    				e.gc.drawArc(circleX, circleY, circleWidth, circleHeight, 0, 360);
+    			}
+    		}
+    		
+    		// Draw triangles
+    		String[][] triangles = lexiControl.getTriangles();
+    		for (int i=0; i<triangles.length; i++) {
+    			if (triangles[i][0] != "") {
+    				int triangleX1 = Integer.parseInt(triangles[i][0]);
+    				int triangleY1 = Integer.parseInt(triangles[i][1]);
+    				int triangleX2 = Integer.parseInt(triangles[i][2]);
+    				int triangleY2 = Integer.parseInt(triangles[i][3]);
+    				int triangleX3 = Integer.parseInt(triangles[i][4]);
+    				int triangleY3 = Integer.parseInt(triangles[i][5]);
+    				e.gc.drawLine(triangleX1, triangleY1, triangleX2, triangleY2);
+    				e.gc.drawLine(triangleX2, triangleY2, triangleX3, triangleY3);
+    				e.gc.drawLine(triangleX3, triangleY3, triangleX1, triangleY1);				
+    			}
+    		}
+    		
+    		//e.gc.drawArc(100, 100, 100, 100, 0,360);
     		String sideMarginString = lexiControl.getCurrSideMargin();
     		sideMargins = getMarginCode(sideMarginString);
     		
@@ -218,498 +235,6 @@ public class LilLexiUI {
 		fD[0].setHeight(24);
 		statusLabel.setFont( new Font(display,fD[0]));
 		statusLabel.setText("Ready to edit!");
-		
-		//---- main menu
-		Menu menuBar, fileMenu, insertMenu, helpMenu;
-		MenuItem fileMenuHeader, insertMenuHeader, helpMenuHeader, fileExitItem, fileSaveItem, helpGetHelpItem;
-		MenuItem insertImageItem, insertRectItem;
-
-		menuBar = new Menu(shell, SWT.BAR);
-		
-		fileMenuHeader = new MenuItem(menuBar, SWT.CASCADE);
-		fileMenuHeader.setText("File");
-		fileMenu = new Menu(shell, SWT.DROP_DOWN);
-		fileMenuHeader.setMenu(fileMenu);
-
-	    fileSaveItem = new MenuItem(fileMenu, SWT.PUSH);
-	    fileSaveItem.setText("Save");
-	    fileExitItem = new MenuItem(fileMenu, SWT.PUSH);
-	    fileExitItem.setText("Exit");
-
-		insertMenuHeader = new MenuItem(menuBar, SWT.CASCADE);
-		insertMenuHeader.setText("Insert");
-		insertMenu = new Menu(shell, SWT.DROP_DOWN);
-		insertMenuHeader.setMenu(insertMenu);
-
-	    insertImageItem = new MenuItem(insertMenu, SWT.PUSH);
-	    insertImageItem.setText("Image");
-	    insertRectItem = new MenuItem(insertMenu, SWT.PUSH);
-	    insertRectItem.setText("Rectangle");
-
-	    helpMenuHeader = new MenuItem(menuBar, SWT.CASCADE);
-	    helpMenuHeader.setText("Help");
-	    helpMenu = new Menu(shell, SWT.DROP_DOWN);
-	    helpMenuHeader.setMenu(helpMenu);
-
-	    helpGetHelpItem = new MenuItem(helpMenu, SWT.PUSH);
-	    helpGetHelpItem.setText("Get Help");
-	    
-	    
-	    // - - - - - Sidebar Interface - - - - - - - - - - - - - - - - - - //
-	    
-	    // Undo button
-	    Button undo = new Button(upperComp, SWT.PUSH);
-	    undo.setText("Undo");
-	    undo.setBounds(810, 10, 75, 30);
-	    
-	    // Redo button
-	    Button redo = new Button(upperComp, SWT.PUSH);
-	    redo.setText("Redo");
-	    redo.setBounds(810, 40, 75, 30);
-	    
-	    Label textSizeLabel = new Label(upperComp, SWT.NONE);
-	    textSizeLabel.setText("Text Size");
-	    textSizeLabel.setBounds(810, 100, 75, 15);
-	    
-	    // Size combo
-	    Combo sizeCombo = new Combo(upperComp, SWT.PUSH);
-	    sizeCombo.setText("Size");
-	    String[] sizes = new String[12];
-	    sizes[0]  = "6";
-	    sizes[1]  = "8";
-	    sizes[2]  = "10";
-	    sizes[3]  = "12";
-	    sizes[4]  = "14";
-	    sizes[5]  = "16";
-	    sizes[6]  = "18";
-	    sizes[7]  = "20";
-	    sizes[8]  = "22";
-	    sizes[9]  = "24";
-	    sizes[10] = "26";
-	    sizes[11] = "28";
-	    sizeCombo.setItems(sizes);
-	    sizeCombo.setBounds(810, 125, 75, 20);
-	    sizeCombo.select(3);
-	    
-	    Label fontLabel = new Label(upperComp, SWT.NONE);
-	    fontLabel.setText("Text Font");
-	    fontLabel.setBounds(810, 160, 75, 20);
-	    
-	    // Fonts combo
-	    Combo fontCombo = new Combo(upperComp, SWT.PUSH);
-	    fontCombo.setText("Font");
-	    String[] fonts = new String[12];
-	    fonts[0]  = "Helvetica";
-	    fonts[1]  = "Arial";
-	    fonts[2]  = "Verdana";
-	    fonts[3]  = "Tahoma";
-	    fonts[4]  = "Trebuchet MS";
-	    fonts[5]  = "Impact";
-	    fonts[6]  = "Gill Sans";
-	    fonts[7]  = "Times New Roman";
-	    fonts[8]  = "Georgia";
-	    fonts[9]  = "Palatino";
-	    fonts[10] = "Baskerville";
-	    fonts[11] = "Courier";
-	    fontCombo.setItems(fonts);  
-	    fontCombo.setBounds(810, 185, 75, 20);
-	    fontCombo.select(0);
-	    
-	    Label colorLabel = new Label(upperComp, SWT.NONE);
-	    colorLabel.setText("Text Color");
-	    colorLabel.setBounds(810, 220, 75, 20);
-	    
-	    // Colors combo
-	    Combo colorsCombo = new Combo(upperComp, SWT.PUSH);
-	    colorsCombo.setText("Color");
-	    String[] colors = new String[8];
-	    colors[0] = "Black";
-	    colors[1] = "White";
-	    colors[2] = "Red";
-	    colors[3] = "Orange";
-	    colors[4] = "Yellow";
-	    colors[5] = "Green";
-	    colors[6] = "Blue";
-	    colors[7] = "Purple";
-	    colorsCombo.setItems(colors);
-	    colorsCombo.setBounds(810, 245, 75, 20);
-	    colorsCombo.select(0);
-	    
-	    Label sideMarginLabel = new Label(upperComp, SWT.NONE);
-	    sideMarginLabel.setText("L/R Margin");
-	    sideMarginLabel.setBounds(810, 280, 75, 20);
-	    
-	    // Margin combos
-	    Combo sideMarginCombo = new Combo(upperComp, SWT.PUSH);
-	    sideMarginCombo.setText("Margin");
-	    String[] margins = new String[6];
-	    margins[0] = "0''";
-	    margins[1] = "1/4''";
-	    margins[2] = "1/2''";
-	    margins[3] = "3/4''";
-	    margins[4] = "1''";
-	    margins[5] = "1 1/2''";
-	    sideMarginCombo.setItems(margins);
-	    sideMarginCombo.setBounds(810, 305, 75, 20);
-	    sideMarginCombo.select(2);
-	    
-	    Label edgeMarginLabel = new Label(upperComp, SWT.NONE);
-	    edgeMarginLabel.setText("T/B Margin");
-	    edgeMarginLabel.setBounds(810, 340, 75, 20);
-	    
-	    Combo edgeMarginCombo = new Combo(upperComp, SWT.PUSH);
-	    edgeMarginCombo.setText("Margin");
-	    edgeMarginCombo.setItems(margins);
-	    edgeMarginCombo.setBounds(810, 365, 75, 20);
-	    edgeMarginCombo.select(2);
-	    
-	    Button activateSpellCheck = new Button(upperComp, SWT.PUSH);
-	    activateSpellCheck.setText("Spell Check");
-	    activateSpellCheck.setBounds(805, 400, 90, 40);
-	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-	    
-	    
-	    
-	    // - - - - - Interface for adding a image - - - - - - - - - - - - - - //
-	    Shell addImageShell = new Shell(display);
-		addImageShell.setSize(325, 310);
-		
-		Composite imageUpperComp = new Composite(addImageShell, SWT.NONE);
-		Composite imageLowerComp = new Composite(addImageShell, SWT.NONE);
-		
-		GridLayout gridLayout = new GridLayout();
-        gridLayout.marginLeft = 10;
-        gridLayout.marginTop = 10;
-        gridLayout.numColumns = 2;
-        gridLayout.makeColumnsEqualWidth = true;
-        addImageShell.setLayout(gridLayout);
-        
-        imageUpperComp.setLayout(gridLayout);
-        imageLowerComp.setLayout(new RowLayout(SWT.VERTICAL));
-        
-        imageUpperComp.setBounds(0, 0, 400, 400);
-        imageLowerComp.setBounds(0, 300, 400, 100);
-
-        addImageShell.setLayout(new RowLayout(SWT.VERTICAL));
-        
-       
-        File folder = new File("/Users/ryanrizzo/eclipse-workspace/CSC335-A2-LilLexi/images");
-        File[] listOfFiles = folder.listFiles();
-        String[] imagesPath = new String[listOfFiles.length];
-        String[] imageNames = new String[listOfFiles.length];
-        for (int i = 0; i < listOfFiles.length; i++) {
-        	imagesPath[i] = listOfFiles[i].toString();
-        	imageNames[i] = imagesPath[i].substring(60);
-        }
-        
-        String[] imageSizeOptions = new String[8];
-        imageSizeOptions[0] = "4";
-        imageSizeOptions[1] = "8";
-        imageSizeOptions[2] = "16";
-        imageSizeOptions[3] = "32";
-        imageSizeOptions[4] = "64";
-        imageSizeOptions[5] = "128";
-        imageSizeOptions[6] = "256";
-        imageSizeOptions[7] = "512";
-        
-        String[] imageLocationOptions = new String[15];
-        imageLocationOptions[0] = "50";
-        imageLocationOptions[1] = "100";
-        imageLocationOptions[2] = "150";
-        imageLocationOptions[3] = "200";
-        imageLocationOptions[4] = "250";
-        imageLocationOptions[5] = "300";
-        imageLocationOptions[6] = "350";
-        imageLocationOptions[7] = "400";
-        imageLocationOptions[8] = "450";
-        imageLocationOptions[9] = "500";
-        imageLocationOptions[10] = "550";
-        imageLocationOptions[11] = "600";
-        imageLocationOptions[12] = "650";
-        imageLocationOptions[13] = "700";
-        imageLocationOptions[14] = "750";
-        
-        Label imageName = new Label(imageUpperComp, SWT.NONE);
-        imageName.setText("Image name: \n");
-        imageName.setBounds(20, 0, 40, 10);
-        
-        Combo imagesCombo = new Combo(imageUpperComp, SWT.PUSH);
-        imagesCombo.setItems(imageNames);
-        imageName.setBounds(40, 0, 40, 10);
-        
-        Label imageWidth = new Label(imageUpperComp, SWT.NONE);
-        imageWidth.setText("Width: ");
-        
-        Combo imageWidthCombo = new Combo(imageUpperComp, SWT.PUSH);
-        imageWidthCombo.setItems(imageSizeOptions);
-        
-        Label imageHeight = new Label(imageUpperComp, SWT.NONE);
-        imageHeight.setText("Height: \n");
-        imageName.setBounds(20, 60, 40, 10);
-        
-        Combo imageHeightCombo = new Combo(imageUpperComp, SWT.PUSH);
-        imageHeightCombo.setItems(imageSizeOptions);
-        
-        Label imageX = new Label(imageUpperComp, SWT.NONE);
-        imageX.setText("x: "); 
-        
-        Combo imageXcombo = new Combo(imageUpperComp, SWT.PUSH);
-        imageXcombo.setItems(imageLocationOptions);  
-        
-        Label imageY = new Label(imageUpperComp, SWT.NONE);
-        imageY.setText("y: ");
-        
-        Combo imageYcombo = new Combo(imageUpperComp, SWT.PUSH);
-        imageYcombo.setItems(imageLocationOptions);   
-        
-        Label imageWarning = new Label(imageLowerComp, SWT.NONE);
-        imageWarning.setText("NOTE: Please make sure any image you wish to add\n is inside './CSC252-A2-LilLexi/images'");
-        imageWarning.setLocation(0, 350);
-        
-        Button submitImage = new Button(imageLowerComp, SWT.PUSH);
-        submitImage.setText("Submit");
-	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-        
-        
-        
-        // - - - - - Interface for adding a rectangle - - - - - - - - - - - //
-        Shell addRectShell = new Shell(display);
-		addRectShell.setSize(280, 260);
-		
-		Composite rectUpperComp = new Composite(addRectShell, SWT.NONE);
-		Composite rectLowerComp = new Composite(addRectShell, SWT.NONE);
-        addRectShell.setLayout(gridLayout);
-        
-        rectUpperComp.setLayout(gridLayout);
-        rectLowerComp.setLayout(new RowLayout(SWT.VERTICAL));
-        
-        rectUpperComp.setBounds(0, 0, 400, 400);
-        rectLowerComp.setBounds(0, 300, 400, 100);
-
-        addRectShell.setLayout(new RowLayout(SWT.VERTICAL));
-        
-        Label rectWidth = new Label(rectUpperComp, SWT.NONE);
-        rectWidth.setText("Width: ");
-        Combo rectWidthCombo = new Combo(rectUpperComp, SWT.PUSH);
-        rectWidthCombo.setItems(imageSizeOptions);
-        
-        Label rectHeight = new Label(rectUpperComp, SWT.NONE);
-        rectHeight.setText("Height: \n");       
-        Combo rectHeightCombo = new Combo(rectUpperComp, SWT.PUSH);
-        rectHeightCombo.setItems(imageSizeOptions);
-        
-        Label rectX = new Label(rectUpperComp, SWT.NONE);
-        rectX.setText("x: ");         
-        Combo rectXcombo = new Combo(rectUpperComp, SWT.PUSH);
-        rectXcombo.setItems(imageLocationOptions);  
-        
-        Label rectY = new Label(rectUpperComp, SWT.NONE);
-        rectY.setText("y: ");        
-        Combo rectYcombo = new Combo(rectUpperComp, SWT.PUSH);
-        rectYcombo.setItems(imageLocationOptions);   
-        
-        Button submitRect = new Button(rectLowerComp, SWT.PUSH);
-        submitRect.setText("Submit");
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
-        
-        
-        
-        // - - - - - - Interface for spell check - - - - - - - - - - - - - //
-        RowLayout rowLayout = new RowLayout(SWT.NONE);
-        Shell spellCheckShell = new Shell(display);
-        spellCheckShell.setLayout(rowLayout);
-        spellCheckShell.setSize(400, 100 + (10 * spellCheck.getErrors().size()));
-        
-        Label spellCheckInfo = new Label(spellCheckShell, SWT.NONE);
-        String spellCheckInfoText = spellCheck.toString();
-        spellCheckInfo.setText(spellCheckInfoText);
-        
-        
-        
-        // - - - - - - Selection Listeners - - - - - - - - - - - - - - - - //
-        
-        // Selection listener for exiting the program
-	    fileExitItem.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		shell.close();
-	    		display.dispose();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {
-	    		shell.close();
-	    		display.dispose();
-	    	}
-	    });
-	    
-	    // Selection listener for saving the file
-	    fileSaveItem.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {
-	    	}	    		
-	    });
-	    
-	    // Selection listener for accessing help menu
-	    helpGetHelpItem.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {
-	    	}	    		
-	    });	
-	    
-	    // Selection listener for adding an image to the document
-	    insertImageItem.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		addImageShell.open();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {}
-	    });
-	    
-	    // Selection listener for adding a rectangle to the document
-	    insertRectItem.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		addRectShell.open();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {}
-	    });
-	    // Selection listener for submitting an image
-	    submitImage.addSelectionListener(new SelectionListener() {
-        	public void widgetSelected(SelectionEvent event) {
-        		String imageToAdd = imagesCombo.getText();
-        		imageToAdd = "/Users/ryanrizzo/eclipse-workspace/CSC335-A2-LilLexi/images/" + imageToAdd; 
-        		
-        		
-        		int imageWidth = Integer.parseInt(imageWidthCombo.getText());
-        		int imageHeight = Integer.parseInt(imageHeightCombo.getText());
-        		String imageX = imageXcombo.getText();
-        		String imageY = imageYcombo.getText();
-        		
-        		int index = 0;
-        		while (images[index][0] != "") {
-        			index++;
-        		}
-        		String[] imageInfo = new String[3];
-        		imageInfo[0] = imageToAdd;
-        		imageInfo[1] = imageX;
-        		imageInfo[2] = imageY;
-        		images[index] = imageInfo;
-        		addImageShell.close();
-        		canvas.redraw();
-        		updateUI();
-        	}
-        	public void widgetDefaultSelected(SelectionEvent event) {}
-        });
-	    
-	    // Selection listener for submitting a rectangle
-	    submitRect.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		String rectWidth = rectWidthCombo.getText();
-        		String rectHeight = rectHeightCombo.getText();
-        		String rectX = rectXcombo.getText();
-        		String rectY = rectYcombo.getText();
-        		
-        		int index = 0;
-        		while (rects[index][0] != "") {
-        			index++;
-        		}
-        		String[] rectInfo = new String[4];
-        		rectInfo[0] = rectX;
-        		rectInfo[1] = rectY;
-        		rectInfo[2] = rectWidth;
-        		rectInfo[3] = rectHeight;
-        		rects[index] = rectInfo;
-        		System.out.println(rects[0]);
-        		addRectShell.close();
-        		canvas.redraw();
-        		updateUI();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {}
-	    });
-	    
-	    // Selection listener for use of the undo button
-	    undo.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		lexiControl.undo();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {}
-	    });
-	    
-	    // Selection listener for use of the redo button
-	    redo.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		lexiControl.redo();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {}
-	    });
-	    
-	    // Selection listener for using a new font size
-	    sizeCombo.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		int size = Integer.parseInt(sizeCombo.getText());
-	    		System.out.println("Size: " + size);
-	    		lexiControl.setCurrSize(size);
-	    		canvas.redraw();
-	    		updateUI();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {}
-	    });
-	    
-	    // Selection listener for using a new font
-	    fontCombo.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		String font = fontCombo.getText();
-	    		lexiControl.setCurrFont(font);
-	    		canvas.redraw();
-	    		updateUI();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {}
-	    });
-	    
-	    // Selection listener for using a new color
-	    colorsCombo.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		String color = colorsCombo.getText();
-	    		lexiControl.setCurrColor(color);
-	    		canvas.redraw();
-	    		updateUI();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {}
-	    });
-	    
-	    // Selection listener for using a new side margin size
-	    sideMarginCombo.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		String sideMarginSize = sideMarginCombo.getText();
-	    		lexiControl.setCurrSideMargin(sideMarginSize);
-	    		canvas.redraw();
-	    		updateUI();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {}
-	    });
-	    
-	    // Selection listener for using a new edge margin size
-	    edgeMarginCombo.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		String edgeMarginSize = edgeMarginCombo.getText();
-	    		lexiControl.setCurrEdgeMargin(edgeMarginSize);
-	    		canvas.redraw();
-	    		updateUI();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {}
-	    });
-	    
-	    // Selection listener for using spell check
-	    activateSpellCheck.addSelectionListener(new SelectionListener() {
-	    	public void widgetSelected(SelectionEvent event) {
-	    		spellCheck.checkWords();
-	    		String spellCheckInfoText = spellCheck.toString();
-	    		spellCheckInfo.setText(spellCheckInfoText);
-	    		spellCheckShell.setSize(400, 100 + (14 * spellCheck.getErrors().size()));
-	    		spellCheckShell.open();
-	    	}
-	    	public void widgetDefaultSelected(SelectionEvent event) {}
-	    });
-	   
-	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 	    
 	    
 	    
@@ -721,6 +246,14 @@ public class LilLexiUI {
             }
         });
 	    
+        LilLexiSidebarUI sidebar = new LilLexiSidebarUI(display, shell, upperComp, lexiControl, canvas, spellCheck);
+        sidebar.start();
+        
+        
+        LilLexiMenuUI menu = new LilLexiMenuUI(display, shell, upperComp, lexiControl, canvas, spellCheck);
+        menu.start();
+        
+        Menu menuBar = menu.getMenuBar();
 	    shell.setMenuBar(menuBar);
 	      
 		//---- event loop
