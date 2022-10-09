@@ -23,6 +23,11 @@ public class LilLexiDoc
 	private String currEdgeMargin;
 	private int currSize;
 	private int index;
+	private String[][] images;
+	private String[][] rects;
+	private String[][] lines;
+	private String[][] circles;
+	private String[][] triangles;
 	
 	
 	/**
@@ -40,6 +45,41 @@ public class LilLexiDoc
 		currFont = "Courier";
 		currColor = "Black";
 		currSize = 12;
+		
+		images = new String[100][5];
+		rects = new String[100][5];
+		lines = new String[100][4];
+		circles = new String[100][4];
+		triangles = new String[100][6];
+		for (int i=0; i<100; i++) {
+			String[] tempImage = new String[3];
+			tempImage[0] = "";
+			tempImage[1] = "";
+			tempImage[2] = "";
+			String[] tempRect = new String[5];
+			tempRect[0] = "";
+			tempRect[1] = "";
+			tempRect[2] = "";
+			tempRect[3] = "";
+			tempRect[4] = "";
+			String[] tempLineCircle = new String[4];
+			tempLineCircle[0] = "";
+			tempLineCircle[1] = "";
+			tempLineCircle[2] = "";
+			tempLineCircle[3] = "";
+			String[]  tempTriangle = new String[6];
+			tempTriangle[0] = "";
+			tempTriangle[1] = "";
+			tempTriangle[2] = "";
+			tempTriangle[3] = "";
+			tempTriangle[4] = "";
+			tempTriangle[5] = "";
+			images[i] = tempImage;
+			rects[i] = tempRect;
+			lines[i] = tempLineCircle;
+			circles[i] = tempLineCircle;
+			triangles[i] = tempTriangle;
+		}
 	}
 	
 	/* - - - - - - SET UI - - - - - - - - - - - - - - - - - - - - - - 
@@ -214,6 +254,26 @@ public class LilLexiDoc
 		return glyphs;
 	}
 	
+	public String[][] getImages(){
+		return images;
+	}
+	
+	public String[][] getRects(){
+		return rects;
+	}
+	
+	public String[][] getLines(){
+		return lines;
+	}
+	
+	public String[][] getCircles(){
+		return circles;
+	}
+	
+	public String[][] getTriangles(){
+		return triangles;
+	}
+	
 	/* - - - - - - SET CURR FONT - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for setting the current font value
 	 * 
@@ -272,6 +332,22 @@ public class LilLexiDoc
 		} else {
 			index = i;
 		}
+	}
+	
+	public void addImage(String[] imageInfo) {
+		
+	}
+	public void addRect(String[] rectInfo) {
+		
+	}
+	public void addLine(String[] lineInfo) {
+		
+	}
+	public void addCircle(String[] circleInfo) {
+		
+	}
+	public void addTriangle(String[] triangleInfo) {
+		
 	}
 }
 

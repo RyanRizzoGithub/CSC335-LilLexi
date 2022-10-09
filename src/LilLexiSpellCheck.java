@@ -52,6 +52,7 @@ public class LilLexiSpellCheck {
 		return errors;
 	}
 	
+	
 	public String toString() {
 		String str = "The following words were not found in our dictionary...\n";
 		str += "LINE:   COLUMN:	WORD: \n";
