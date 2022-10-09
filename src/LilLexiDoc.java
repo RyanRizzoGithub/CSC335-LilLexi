@@ -69,8 +69,14 @@ public class LilLexiDoc
 		undoMemo.put(index, c);
 		
 		// Update
+		if (c == '\t') {
+			glyphs.add(index, new Glyph(' ', currFont, currSize, currColor));
+			glyphs.add(index, new Glyph(' ', currFont, currSize, currColor));
+			index += 3;
+		} else {
+			index++;
+		}
 		ui.updateUI();
-		index++;
 	}
 	/* - - - - - - REMOVE - - - - - - - - - - - - - - - - - - - - - - - 
 	 * This function is responsible for removing a single Glyph
