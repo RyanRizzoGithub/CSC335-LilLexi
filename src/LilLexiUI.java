@@ -4,6 +4,7 @@
  * FILE:		LilLexiUI.java
  * DATE:		10/13/22
  */
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.*;
@@ -11,7 +12,6 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.graphics.Font;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -146,7 +146,7 @@ public class LilLexiUI {
     			}
     		}
     		
-    		//e.gc.drawArc(100, 100, 100, 100, 0,360);
+
     		String sideMarginString = lexiControl.getCurrSideMargin();
     		sideMargins = getMarginCode(sideMarginString);
     		
@@ -159,18 +159,25 @@ public class LilLexiUI {
     		rowHeight = fontSize;
     		
     		List<Glyph> glyphs = currentDoc.getGlyphs();
-    		int column = 0; int row = 0;
+    		int column = 0; int row = 0; int currRowWidth = 0;
     		for (Glyph g: glyphs) {
     			if (g.getChar() == 13) {
-    				row += rowHeight;
     				column = 0;
     			}
     			else {
-    				e.gc.drawString("" + g.getChar(), column + sideMargins, row + edgeMargins);  
+    				 
+    				
+    				
+    				if (column == 0) {
+    					row += rowHeight;	
+    					currentDoc.setRowWidth((row / rowHeight) - 1, currRowWidth);
+    					System.out.println("row: " + row/rowHeight + " width: " + currRowWidth);
+    					currRowWidth = 0;
+    				}
+    				e.gc.drawString("" + g.getChar(), column + sideMargins, row + edgeMargins); 
     				column = (column + columnWidth) % (rowWidth * columnWidth);
-    				if (column == 0) row += rowHeight;
+    				currRowWidth++;
     			}
-    			
     			System.out.println(g.getChar());
     		}
     		System.out.println();
@@ -183,14 +190,34 @@ public class LilLexiUI {
             	System.out.println("mouseDown in canvas");
             	System.out.println("x: " + e.x + " y: " + e.y);
             	
+            	int i = 0;
+            	int total = 1;
+            	while (i < ((e.y - edgeMargins) / rowHeight)) {
+            		total += currentDoc.getRowWidth()[i];
+            		System.out.println("row: " + i + " width: " + currentDoc.getRowWidth()[i]);
+            		i++;
+            	}
             	
-            	int index = ((e.x - sideMargins) / columnWidth) + (rowWidth * ((e.y - edgeMargins) / rowHeight));
+            	
+            	
+            	int index = ((e.x - sideMargins) / columnWidth) + (total);
+            	if (index >= currentDoc.getGlyphs().size()) {
+            		index = currentDoc.getGlyphs().size() - 1;
+            	}
+            	if (index < 0) {
+            		index = 0;
+            	}
+            	System.out.println("total: " + total);
+            	System.out.println(lexiControl.getNumNewline());
+            	System.out.println("index: " + index);
             	List<Glyph> glyphs = currentDoc.getGlyphs();
             	glyphs.remove(currentDoc.getCurrIndex());
-
             	lexiControl.setIndex(index);
-            	index = lexiControl.getCurrIndex();
-            	glyphs.add(index, new Glyph('|', currentDoc.getCurrFont(), currentDoc.getCurrSize(), currentDoc.getCurrColor()));
+            	
+            	
+            		glyphs.add(index, new Glyph('|', currentDoc.getCurrFont(), currentDoc.getCurrSize(), currentDoc.getCurrColor()));
+
+            	
             	canvas.redraw();
             	updateUI();
             } 
@@ -200,11 +227,19 @@ public class LilLexiUI {
         
         canvas.addKeyListener(new KeyListener() {
         	public void keyPressed(KeyEvent e) {
+        		List<Glyph> glyphs = currentDoc.getGlyphs();
+        		int index = currentDoc.getCurrIndex();
         		System.out.println("key " + e.character);
         		if (e.character == '\b') {
         			lexiControl.remove();
+        			if (glyphs.get(index).getChar() == 13) {
+        				lexiControl.removeNewline();
+        			}
         		} else {
         			lexiControl.add(e.character);
+        			if (e.character == 13) {
+        				lexiControl.addNewline();
+        			}
         		}
         	}
         	public void keyReleased(KeyEvent e) {}

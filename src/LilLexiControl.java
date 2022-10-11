@@ -66,6 +66,9 @@ public class LilLexiControl {
 	public String[][] getTriangles(){
 		return currentDoc.getTriangles();
 	}
+	public int getNumNewline() {
+		return currentDoc.getNumNewline();
+	}
 	
 	void setIndex(int i) {
 		currentDoc.setIndex(i);
@@ -117,6 +120,12 @@ public class LilLexiControl {
 	}
 	public void addTriangle(String[] triangleInfo) {
 		currentDoc.addTriangle(triangleInfo);
+	}
+	public void addNewline() {
+		currentDoc.addNewline();
+	}
+	public void removeNewline() {
+		currentDoc.removeNewline();
 	}
 
 	/**

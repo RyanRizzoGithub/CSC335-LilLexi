@@ -113,7 +113,9 @@ public class LilLexiMenuUI {
         addImageShell.setLayout(new RowLayout(SWT.VERTICAL));
         
         // Get all images in in the images folder
-        File folder = new File("/Users/ryanrizzo/eclipse-workspace/CSC335-A2-LilLexi/images");
+        File file = new File("images");
+        File folder = new File(file.getAbsolutePath());
+       
         File[] listOfFiles = folder.listFiles();
         String[] imagesPath = new String[listOfFiles.length];
         String[] imageNames = new String[listOfFiles.length];

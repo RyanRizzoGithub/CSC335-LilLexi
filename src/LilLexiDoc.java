@@ -23,6 +23,8 @@ public class LilLexiDoc
 	private String currEdgeMargin;
 	private int currSize;
 	private int index;
+	private int numNewline;
+	private int[] rowWidth;
 	private String[][] images;
 	private String[][] rects;
 	private String[][] lines;
@@ -45,6 +47,12 @@ public class LilLexiDoc
 		currFont = "Courier";
 		currColor = "Black";
 		currSize = 12;
+		numNewline = 0;
+		
+		rowWidth = new int[1000];
+		for (int i=0; i<1000; i++) {
+			rowWidth[i] = -1;
+		}
 		
 		images = new String[100][5];
 		rects = new String[100][5];
@@ -274,6 +282,14 @@ public class LilLexiDoc
 		return triangles;
 	}
 	
+	public int getNumNewline() {
+		return numNewline;
+	}
+	
+	public int[] getRowWidth() {
+		return rowWidth;
+	}
+	
 	/* - - - - - - SET CURR FONT - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for setting the current font value
 	 * 
@@ -327,11 +343,15 @@ public class LilLexiDoc
 	 * @param i, the integer which represents the current index of the cursor
 	 */
 	public void setIndex(int i) {
+		//i = i + (currSize * numNewline);
 		if (i >= glyphs.size()) {
 			i = glyphs.size() - 1;
 		} else {
 			index = i;
 		}
+	}
+	public void setRowWidth(int row, int i) {
+		rowWidth[row] = i;
 	}
 	
 	public void addImage(String[] imageInfo) {
@@ -348,6 +368,12 @@ public class LilLexiDoc
 	}
 	public void addTriangle(String[] triangleInfo) {
 		
+	}
+	public void addNewline() {
+		numNewline++;
+	}
+	public void removeNewline() {
+		numNewline--;
 	}
 }
 
