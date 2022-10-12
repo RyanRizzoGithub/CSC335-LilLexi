@@ -350,10 +350,9 @@ public class LilLexiDoc
 	 * 
 	 * @param i, the integer which represents the current index of the cursor
 	 */
-	public void setIndex(int i) {
-		//i = i + (currSize * numNewline);
-		if (i >= glyphs.size()) {
-			i = glyphs.size() - 1;
+	public void setCurrIndex(int i) {
+		if (i > glyphs.size()) {
+			i = glyphs.size();
 		} else {
 			index = i;
 		}
