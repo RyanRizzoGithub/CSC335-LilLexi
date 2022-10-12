@@ -71,7 +71,7 @@ public class LilLexiControl {
 	}
 	
 	void setIndex(int i) {
-		currentDoc.setIndex(i);
+		currentDoc.setCurrIndex(i);
 	}
 	void setCurrSize(int size) {
 		currentDoc.setCurrSize(size);

@@ -31,6 +31,7 @@ public class LilLexiUI {
 	private Shell shell;
 	private Label statusLabel;
 	private Canvas canvas;	
+	private int rows;
 	private int columnWidth;
 	private int rowWidth;
 	private int rowHeight;
@@ -51,6 +52,7 @@ public class LilLexiUI {
 		columnWidth = -1;
 		rowHeight = -1;
 		rowWidth = -1;	
+		rows = 0;
 	}
 		
 	/**
@@ -176,6 +178,7 @@ public class LilLexiUI {
     				currRowWidth++;
     			}
     		}
+    		rows = row / rowHeight;
 		});	
 		
 		
@@ -198,17 +201,20 @@ public class LilLexiUI {
             	if (index >= currentDoc.getGlyphs().size()) {
             		index = currentDoc.getGlyphs().size() - 1;
             	}
+            	if ((e.y - edgeMargins) / rowHeight > rows) {
+        			index = currentDoc.getGlyphs().size() - 1;
+        		}
             	if (index < 0) {
             		index = 0;
             	}
 
-            	System.out.println("index: " + index);
+            	
             	List<Glyph> glyphs = currentDoc.getGlyphs();
             	
             	glyphs.remove(currentDoc.getCurrIndex());
       
-            	
-            	lexiControl.setIndex(index);
+            	System.out.println("index: " + index + " prevIndex: " + currentDoc.getCurrIndex());
+            	currentDoc.setCurrIndex(index);
             	
             	
             	glyphs.add(index, new Glyph('|', currentDoc.getCurrFont(), currentDoc.getCurrSize(), currentDoc.getCurrColor()));
