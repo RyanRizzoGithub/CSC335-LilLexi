@@ -23,6 +23,7 @@ public class LilLexiDoc
 	private String currEdgeMargin;
 	private int currSize;
 	private int index;
+	private int depth;
 	private int numNewline;
 	private int[] rowWidth;
 	private String[][] images;
@@ -48,6 +49,7 @@ public class LilLexiDoc
 		currColor = "Black";
 		currSize = 12;
 		numNewline = 0;
+		depth = 0;
 		
 		rowWidth = new int[1000];
 		for (int i=0; i<1000; i++) {
@@ -111,6 +113,8 @@ public class LilLexiDoc
 			glyphs.remove(index);
 		}
 		glyphs.add(index, new Glyph(c, currFont, currSize, currColor));
+		
+		
 		glyphs.add(index + 1, new Glyph('|', currFont, currSize, currColor));
 		
 		// Add the location & character to the undo tracker
@@ -253,6 +257,10 @@ public class LilLexiDoc
 		return this.index;
 	}
 	
+	public int getDepth() {
+		return this.depth;
+	}
+	
 	/* - - - - - - GET GLYPHS - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for returning the list of Glyphs on the document
 	 * 
@@ -349,6 +357,10 @@ public class LilLexiDoc
 		} else {
 			index = i;
 		}
+	}
+	
+	public void setDepth(int i) {
+		this.depth = i;
 	}
 	public void setRowWidth(int row, int i) {
 		rowWidth[row] = i;

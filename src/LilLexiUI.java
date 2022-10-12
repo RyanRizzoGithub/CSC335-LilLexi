@@ -90,7 +90,9 @@ public class LilLexiUI {
     		for (int i=0; i<images.length; i++) {
     			if (images[i][0] != "") {
     				Image image = new Image(display, images[i][0]);
-    				e.gc.drawImage(image, Integer.parseInt(images[i][1]), Integer.parseInt(images[i][2]));
+    				int imageX = Integer.parseInt(images[i][1]);
+    				int imageY = Integer.parseInt(images[i][2]) - (currentDoc.getDepth() * rowHeight);
+    				e.gc.drawImage(image, imageX, imageY);
     			}
     		}
     		
@@ -99,7 +101,7 @@ public class LilLexiUI {
     		for (int i=0; i<rects.length; i++) {
     			if (rects[i][0] != "") {
     				int rectX = Integer.parseInt(rects[i][0]);
-    				int rectY = Integer.parseInt(rects[i][1]);
+    				int rectY = Integer.parseInt(rects[i][1]) - (currentDoc.getDepth() * rowHeight);
     				int rectWidth = Integer.parseInt(rects[i][2]);
     				int rectHeight = Integer.parseInt(rects[i][3]);
     				Rectangle rectangle = new Rectangle(rectX, rectY, rectWidth, rectHeight); 	
@@ -111,9 +113,9 @@ public class LilLexiUI {
     		for (int i=0; i<lines.length; i++) {
     			if (lines[i][0] != "") {
     				int lineX1 = Integer.parseInt(lines[i][0]);
-    				int lineY1 = Integer.parseInt(lines[i][1]);
+    				int lineY1 = Integer.parseInt(lines[i][1]) - (currentDoc.getDepth() * rowHeight);
     				int lineX2 = Integer.parseInt(lines[i][2]);
-    				int lineY2 = Integer.parseInt(lines[i][3]);
+    				int lineY2 = Integer.parseInt(lines[i][3]) - (currentDoc.getDepth() * rowHeight);
     				e.gc.drawLine(lineX1, lineY1, lineX2, lineY2);
     			}
     		}
@@ -123,7 +125,7 @@ public class LilLexiUI {
     		for (int i=0; i<circles.length; i++) {
     			if (circles[i][0] != "" ) {
     				int circleX = Integer.parseInt(circles[i][0]);
-    				int circleY = Integer.parseInt(circles[i][1]);
+    				int circleY = Integer.parseInt(circles[i][1]) - (currentDoc.getDepth() * rowHeight);
     				int circleWidth = Integer.parseInt(circles[i][2]);
     				int circleHeight = Integer.parseInt(circles[i][3]);
     				e.gc.drawArc(circleX, circleY, circleWidth, circleHeight, 0, 360);
@@ -135,18 +137,17 @@ public class LilLexiUI {
     		for (int i=0; i<triangles.length; i++) {
     			if (triangles[i][0] != "") {
     				int triangleX1 = Integer.parseInt(triangles[i][0]);
-    				int triangleY1 = Integer.parseInt(triangles[i][1]);
+    				int triangleY1 = Integer.parseInt(triangles[i][1]) - (currentDoc.getDepth() * rowHeight);
     				int triangleX2 = Integer.parseInt(triangles[i][2]);
-    				int triangleY2 = Integer.parseInt(triangles[i][3]);
+    				int triangleY2 = Integer.parseInt(triangles[i][3]) - (currentDoc.getDepth() * rowHeight);
     				int triangleX3 = Integer.parseInt(triangles[i][4]);
-    				int triangleY3 = Integer.parseInt(triangles[i][5]);
+    				int triangleY3 = Integer.parseInt(triangles[i][5]) - (currentDoc.getDepth() * rowHeight);
     				e.gc.drawLine(triangleX1, triangleY1, triangleX2, triangleY2);
     				e.gc.drawLine(triangleX2, triangleY2, triangleX3, triangleY3);
     				e.gc.drawLine(triangleX3, triangleY3, triangleX1, triangleY1);				
     			}
     		}
     		
-
     		String sideMarginString = lexiControl.getCurrSideMargin();
     		sideMargins = getMarginCode(sideMarginString);
     		
@@ -160,27 +161,21 @@ public class LilLexiUI {
     		
     		List<Glyph> glyphs = currentDoc.getGlyphs();
     		int column = 0; int row = 0; int currRowWidth = 0;
-    		for (Glyph g: glyphs) {
-    			if (g.getChar() == 13) {
+    		for (int i = currentDoc.getDepth() * rowWidth; i < glyphs.size(); i++) {
+    			if (glyphs.get(i).getChar() == 13) {
     				column = 0;
     			}
     			else {
-    				 
-    				
-    				
     				if (column == 0) {
     					row += rowHeight;	
     					currentDoc.setRowWidth((row / rowHeight) - 1, currRowWidth);
-    					System.out.println("row: " + row/rowHeight + " width: " + currRowWidth);
     					currRowWidth = 0;
     				}
-    				e.gc.drawString("" + g.getChar(), column + sideMargins, row + edgeMargins); 
+    				e.gc.drawString("" + glyphs.get(i).getChar(), column + sideMargins, row + edgeMargins); 
     				column = (column + columnWidth) % (rowWidth * columnWidth);
     				currRowWidth++;
     			}
-    			System.out.println(g.getChar());
     		}
-    		System.out.println();
 		});	
 		
 		
@@ -197,8 +192,7 @@ public class LilLexiUI {
             		System.out.println("row: " + i + " width: " + currentDoc.getRowWidth()[i]);
             		i++;
             	}
-            	
-            	
+            
             	
             	int index = ((e.x - sideMargins) / columnWidth) + (total);
             	if (index >= currentDoc.getGlyphs().size()) {
@@ -207,15 +201,17 @@ public class LilLexiUI {
             	if (index < 0) {
             		index = 0;
             	}
-            	System.out.println("total: " + total);
-            	System.out.println(lexiControl.getNumNewline());
+
             	System.out.println("index: " + index);
             	List<Glyph> glyphs = currentDoc.getGlyphs();
+            	
             	glyphs.remove(currentDoc.getCurrIndex());
+      
+            	
             	lexiControl.setIndex(index);
             	
             	
-            		glyphs.add(index, new Glyph('|', currentDoc.getCurrFont(), currentDoc.getCurrSize(), currentDoc.getCurrColor()));
+            	glyphs.add(index, new Glyph('|', currentDoc.getCurrFont(), currentDoc.getCurrSize(), currentDoc.getCurrColor()));
 
             	
             	canvas.redraw();
@@ -232,7 +228,7 @@ public class LilLexiUI {
         		System.out.println("key " + e.character);
         		if (e.character == '\b') {
         			lexiControl.remove();
-        			if (glyphs.get(index).getChar() == 13) {
+        			if (glyphs.get(index - 1).getChar() == 13) {
         				lexiControl.removeNewline();
         			}
         		} else {
@@ -248,6 +244,7 @@ public class LilLexiUI {
 		Slider slider = new Slider (canvas, SWT.VERTICAL);
 		Rectangle clientArea = canvas.getClientArea ();
 		slider.setBounds (clientArea.width - 40, clientArea.y + 10, 32, clientArea.height);
+		
 		slider.addListener (SWT.Selection, event -> {
 			String string = "SWT.NONE";
 			switch (event.detail) {
@@ -260,6 +257,11 @@ public class LilLexiUI {
 				case SWT.PAGE_UP: string = "SWT.PAGE_UP"; break;
 			}
 			System.out.println ("Scroll detail -> " + string);
+			
+			if (string.equals("SWT.DRAG")) {
+				currentDoc.setDepth(slider.getSelection());
+				updateUI();
+			}
 		});
 		        
         //---- status label
