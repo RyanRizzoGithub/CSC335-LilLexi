@@ -4,26 +4,86 @@
  * FILE:		LilLexiDoc.java
  * DATE:		10/13/22
  */
+
 import java.util.List;
+import java.util.Stack;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
- * LilLexiDoc
+ * PURPOSE:
+ * This class is responsible for housing all information about that current
+ * state of the document
+ * 
+ * METHODS:
+ * + LilLexiDoc():						Constructor
+ * + setUI(LilLexiUI):					void
+ * + add(char):							void
+ * + remove(char):						void
+ * + undo():							void
+ * + redo():							void
+ * + getUI():							LilLexiUI
+ * + getCurrFont():						String
+ * + getCurrcolor():					String
+ * + getCurrSize():						String
+ * + getCurrSizeMargin():				String
+ * + getCurrEdgeMargin():				String
+ * + getCurrIndex():					int
+ * + getDepth():						int
+ * + getRowHeight():					int
+ * + getRows():							int
+ * + getGlyphs():						List<Glyph>
+ * + getImages():						String[][]
+ * + getRects():						String[][]
+ * + getLines():						String[][]
+ * + getCircles():						String[][]
+ * + getTriangles():					String[][]
+ * + getNumNewline():					int
+ * + getRowWidth():						int
+ * + getColumnWidth():					int
+ * + setCurrFont(String):				void
+ * + setCurrColor(String):				void
+ * + setCurrSize(String):				void
+ * + setCurrSizeMargin(String):			void
+ * + setCurrEdgeMargin(String):			void
+ * + setCurrIndex(int):					void
+ * + setColumnWidth(int):				void
+ * + setRowsWidth(int):					void
+ * + setRowHeight(int):					void
+ * + setDepth(int):						void
+ * + setRowWidth(int):					void
+ * + setRows(int):						void
+ * + setPages(int):						void
+ * + addImage(String[]):				void
+ * + addRect(String[]):					void
+ * + addLine(String[]):					void
+ * + addCircle(String[]):				void
+ * + addTriangle(String[]):				void
+ * + addNewline():						void
+ * + removeNewline():					void
  */
-public class LilLexiDoc 
-{
+public class LilLexiDoc {
 	private LilLexiUI ui;
 	private List<Glyph> glyphs;
 	private HashMap<Integer, Character> undoMemo;
 	private HashMap<Integer, Character> redoMemo;
+	private Stack<Integer> undo;
+	private Stack<String> undoShape;
+	private Stack<String[]> redoShape;
 	private String currFont;
 	private String currColor;
 	private String currSideMargin;
 	private String currEdgeMargin;
+	private String backgroundColor;
 	private int currSize;
 	private int index;
 	private int depth;
+	private int columnWidth;
+	private int rowHeight;
+	private int rows;
+	private int pages;
+	private int rowsWidth;
 	private int numNewline;
 	private int[] rowWidth;
 	private String[][] images;
@@ -33,8 +93,8 @@ public class LilLexiDoc
 	private String[][] triangles;
 	
 	
-	/**
-	 * Constructor
+	/* - - - - - - CONSTRUCTOR - - - - - - - - - - - - - - - - - - - - - -
+	 * This function creates a new instance of LilLexiDoc
 	 */
 	public LilLexiDoc() {
 		glyphs = new ArrayList<Glyph>();
@@ -42,14 +102,24 @@ public class LilLexiDoc
 
 		undoMemo = new HashMap<Integer, Character>();
 		redoMemo = new HashMap<Integer, Character>();
+		undo = new Stack<Integer>();
+		undoShape = new Stack<String>();
 		index = 0;
 		currSideMargin = "1/2''";
 		currEdgeMargin = "1/2''";
 		currFont = "Courier";
 		currColor = "Black";
+		backgroundColor = "White";
 		currSize = 12;
 		numNewline = 0;
-		depth = 0;
+		depth = 0;		
+		columnWidth = -1;
+		rowHeight = -1;
+		rows = 0;
+		rowsWidth = 0;
+		pages = 2;
+		
+		redoShape = new Stack<String[]>();
 		
 		rowWidth = new int[1000];
 		for (int i=0; i<1000; i++) {
@@ -113,21 +183,14 @@ public class LilLexiDoc
 			glyphs.remove(index);
 		}
 		glyphs.add(index, new Glyph(c, currFont, currSize, currColor));
-		
-		
 		glyphs.add(index + 1, new Glyph('|', currFont, currSize, currColor));
 		
 		// Add the location & character to the undo tracker
 		undoMemo.put(index, c);
+		undo.add(index);
 		
 		// Update
-		if (c == '\t') {
-			glyphs.add(index, new Glyph(' ', currFont, currSize, currColor));
-			glyphs.add(index, new Glyph(' ', currFont, currSize, currColor));
-			index += 3;
-		} else {
-			index++;
-		}
+		index++;
 		ui.updateUI();
 	}
 	/* - - - - - - REMOVE - - - - - - - - - - - - - - - - - - - - - - - 
@@ -139,10 +202,11 @@ public class LilLexiDoc
 		if (index >= 1) {
 			// Remove the character from the list
 			glyphs.remove(index - 1);
-			
+		
 			// Remove action from the undo tracker
 			undoMemo.remove(index - 1);
-			
+			undo.pop();
+		
 			// Update
 			ui.updateUI();
 			index--;
@@ -155,16 +219,16 @@ public class LilLexiDoc
 	 * the user made.
 	 */
 	public void undo() {
-		// Check if there are undo actions to take
-		if (undoMemo.get(index - 1) != null) {
-			// Remove the character from the document
-			glyphs.remove(index - 1);
+		// Remove the character from the document
+		if (undo.size() > 0) {
+			int toRemove = undo.pop();
+			glyphs.remove(toRemove);
 		
 			// Change undo & redo trackers
 			char c = undoMemo.get(index - 1);
 			undoMemo.remove(index - 1);
 			redoMemo.put(index - 1, c);
-			
+		
 			// Update
 			ui.updateUI();
 			index--;
@@ -184,12 +248,139 @@ public class LilLexiDoc
 			glyphs.add(index, new Glyph(c, currFont, currSize, currColor));
 		
 			// Change undo & redo trackers
-			redoMemo.remove(redoMemo.size() - 1);
-				undoMemo.put(index, c);
+			redoMemo.remove(index);
+			undoMemo.put(index, c);
+			undo.add(index);
 		
 			// Update
 			ui.updateUI();
 			index++;
+		}
+	}
+	
+	public void undoShape() {
+		if (undoShape.size() > 0) {
+			String action = undoShape.pop();
+			if (action == "Image") {
+				
+				int i = 0;
+				while (images[i][0] != "") {
+					i++;
+				}
+				i--;
+				String[] redoInfo = new String[4];
+				redoInfo[0] = "Image";
+				redoInfo[1] = images[i][0];
+				redoInfo[2] = images[i][1];
+				redoInfo[3] = images[i][2];
+				redoShape.add(redoInfo);
+				images[i][0] = "";
+				images[i][1] = "";
+				images[i][2] = "";
+			}
+			if (action == "Rectangle") {
+				int i = 0;
+				while (rects[i][0] != "") {
+					i++;
+				}
+				i--;
+				String[] redoInfo = new String[5];
+				redoInfo[0] = "Rectangle";
+				redoInfo[1] = rects[i][0];
+				redoInfo[2] = rects[i][1];
+				redoInfo[3] = rects[i][2];
+				redoInfo[4] = rects[i][3];
+				redoShape.add(redoInfo);
+				rects[i][0] = "";
+				rects[i][1] = "";
+				rects[i][2] = "";
+				rects[i][3] = "";
+			}
+			if (action == "Line") {
+				int i = 0;
+				while (lines[i][0] != "") {
+					i++;
+				}
+				i--;
+				String[] redoInfo = new String[5];
+				redoInfo[0] = "Line";
+				redoInfo[1] = lines[i][0];
+				redoInfo[2] = lines[i][1];
+				redoInfo[3] = lines[i][2];
+				redoInfo[4] = lines[i][3];
+				redoShape.add(redoInfo);
+				lines[i][0] = "";
+				lines[i][1] = "";
+				lines[i][2] = "";
+				lines[i][3] = "";
+			}
+			if (action == "Circle") {
+				int i = 0;
+				while (circles[i][0] != "") {
+					i++;
+				}
+				i--;
+				String[] redoInfo = new String[5];
+				redoInfo[0] = "Circle";
+				redoInfo[1] = circles[i][0];
+				redoInfo[2] = circles[i][1];
+				redoInfo[3] = circles[i][2];
+				redoInfo[4] = circles[i][3];
+				redoShape.add(redoInfo);
+				circles[i][0] = "";
+				circles[i][1] = "";
+				circles[i][2] = "";
+				circles[i][3] = "";
+			}
+			if (action == "Triangle") {
+				int i = 0;
+				while (triangles[i][0] != "") {
+					i++;
+				}
+				i--;
+				String[] redoInfo = new String[7];
+				redoInfo[0] = "Triangle";
+				redoInfo[1] = triangles[i][0];
+				redoInfo[2] = triangles[i][1];
+				redoInfo[3] = triangles[i][2];
+				redoInfo[4] = triangles[i][3];
+				redoInfo[5] = triangles[i][4];
+				redoInfo[6] = triangles[i][5];
+				redoShape.add(redoInfo);
+				triangles[i][0] = "";
+				triangles[i][1] = "";
+				triangles[i][2] = "";
+				triangles[i][3] = "";
+				triangles[i][4] = "";
+				triangles[i][5] = "";
+			}
+		}
+	}
+	
+	public void redoShape() {
+		if (redoShape.size() > 0) {
+			String[] info = redoShape.pop();
+			String action = info[0];
+			
+			if (action == "Image") {
+				addImage(Arrays.copyOfRange(info, 1, 4));
+			}
+			
+			if (action == "Rectangle") {
+				addRect(Arrays.copyOfRange(info, 1, 5));
+			}
+			
+			if (action == "Line") {
+				addLine(Arrays.copyOfRange(info, 1, 5));
+			}
+			
+			if (action == "Circle") {
+				addCircle(Arrays.copyOfRange(info, 1, 5));
+			}
+			
+			if (action == "Triangle") {
+				addTriangle(Arrays.copyOfRange(info, 1, 7));
+			}
 		}
 	}
 	
@@ -257,9 +448,33 @@ public class LilLexiDoc
 		return this.index;
 	}
 	
+	/* - - - - - - GET DEPTH - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for returning the depth of the document
+	 * 
+	 * @return depth, the int which represents the depth
+	 */
 	public int getDepth() {
 		return this.depth;
 	}
+	
+	/* - - - - - - GET ROW HEIGHT - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for returning the row height of the document
+	 * 
+	 * @return rowHeight, the int which represents the height of each row
+	 */
+	public int getRowHeight() {
+		return this.rowHeight;
+	}
+	
+	/* - - - - - - GET ROWS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for returning the number of rows on the document
+	 * 
+	 * @return rows, the int which represents the number of rows
+	 */
+	public int getRows() {
+		return this.rows;
+	}
+	
 	
 	/* - - - - - - GET GLYPHS - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for returning the list of Glyphs on the document
@@ -270,33 +485,100 @@ public class LilLexiDoc
 		return glyphs;
 	}
 	
+	/* - - - - - - GET IMAGES - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for returning the array of images
+	 * 
+	 * @return images, String[][] containing data for each image
+	 */
 	public String[][] getImages(){
 		return images;
 	}
 	
+	/* - - - - - - GET RECTANGLES - - - - - - - - - - - - - - - - - - - - -
+	 * Returns a 2d array containing all images on the document
+	 * 
+	 * @return String[][], all rectangles
+	 */
 	public String[][] getRects(){
 		return rects;
 	}
 	
+	/* - - - - - - GET LINES - - - - - - - - - - - - - - - - - - - - - - - 
+	 * Returns a 2d array containing all lines on the document
+	 * 
+	 * @return String[][], all lines
+	 */
 	public String[][] getLines(){
 		return lines;
 	}
 	
+	/* - - - - - - GET CIRCLES - - - - - - - - - - - - - - - - - - - - - -
+	 * Returns a 2d array containing all circles on the document
+	 * 
+	 * @return String[][], all circles
+	 */
 	public String[][] getCircles(){
 		return circles;
 	}
 	
+	/* - - - - - - GET TRIANGLES - - - - - - - - - - - - - - - - - - - - - 
+	 * Returns a 2d array containing all triangles on the document
+	 * 
+	 * @return String[][], all triangles
+	 */
 	public String[][] getTriangles(){
 		return triangles;
 	}
 	
+	/* - - - - - - GET NUM NEWLINE - - - - - - - - - - - - - - - - - - - - 
+	 * Returns the number of user entered newlines
+	 * 
+	 * @return in, number of newlines
+	 */
 	public int getNumNewline() {
 		return numNewline;
 	}
 	
+	/* - - - - - - GET ROW WIDTH - - - - - - - - - - - - - - - - - - - - -
+	 * Returns information about the number of characters in each row
+	 * 
+	 * @return rowWidth, an int[] 
+	 */
 	public int[] getRowWidth() {
 		return rowWidth;
 	}
+	
+	/* - - - - - - GET ROWW WIDTH - - - - - - - - - - - - - - - - - - - - - 
+	 * Returns the width of each row
+	 * 
+	 * @return rowsWidth, int 
+	 */
+	public int getRowsWidth() {
+		return this.rowsWidth;
+	}
+	
+	/* - - - - - - GET COLUMN WIDTH - - - - - - - - - - - - - - - - - - - - 
+	 * Returns the width of each column
+	 * 
+	 * @return columnWidth, int
+	 */
+	public int getColumnWidth() {
+		return this.columnWidth;
+	}
+	
+	/* - - - - - - GET PAGES - - - - - - - - - - - - - - - - - - - - - - - - 
+	 * Returns the number of pages in the document
+	 * 
+	 * @return pages, int
+	 */
+	public int getPages() {
+		return this.pages;
+	}
+	
+	public String getCurrBackgroundColor() {
+		return this.backgroundColor;
+	}
+	
 	
 	/* - - - - - - SET CURR FONT - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for setting the current font value
@@ -344,7 +626,7 @@ public class LilLexiDoc
 		this.currEdgeMargin = size;
 	}
 	
-	/* - - - - - - SET INDEX - - - - - - - - - - - - - - - - - - - - - - - - - -
+	/* - - - - - - SET CURR INDEX - - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for setting the index (or the location
 	 * of the cursor), for use in the document
 	 * 
@@ -358,30 +640,113 @@ public class LilLexiDoc
 		}
 	}
 	
-	public void setDepth(int i) {
-		this.depth = i;
-	}
-	public void setRowWidth(int row, int i) {
-		rowWidth[row] = i;
+	/* - - - - - - SET COLUMN WIDTH - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for setting the current column width
+	 * 
+	 * @param i, int to set as column width
+	 */
+	public void setColumnWidth(int i) {
+		this.columnWidth = i;
 	}
 	
+	/* - - - - - - SET ROWS WIDTH - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for setting the current rows width
+	 * 
+	 * @param i, int to set as rows width
+	 */
+	public void setRowsWidth(int i) {
+		this.rowsWidth = i;
+	}
+	
+	/* - - - - - - SET ROW HEIGHT - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for setting the current row height
+	 * 
+	 * @param i, int to set as row height
+	 */
+	public void setRowHeight(int i) {
+		this.rowHeight = i;
+	}
+	
+	/* - - - - - - SET DEPTH - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for setting the current depth
+	 * 
+	 * @param i, int to set as depth
+	 */
+	public void setDepth(int i) {
+		this.depth = i * (pages);
+	}
+	
+	/* - - - - - - SET ROW WIDTH - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for setting the current row width
+	 * 
+	 * @param row, the row we want to set the width for
+	 * @param i, int to set as row width
+	 */
+	public void setRowWidth(int row, int i) {
+		this.rowWidth[row] = i;
+	}
+	
+	/* - - - - - - SET ROWS - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for setting the current number of rows
+	 * 
+	 * @param i, int the set as number of rows
+	 */
+	public void setRows(int i) {
+		this.rows = i;
+	}
+	
+	public void setCurrBackgroundColor(String color) {
+		this.backgroundColor = color;
+	}
+	
+	/* - - - - - - ADD IMAGE - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * 
+	 */
 	public void addImage(String[] imageInfo) {
+		int i = 0;
+		while (images[i][0] != "") {
+			i++;
+		}
+		images[i] = imageInfo;
 		
 	}
 	public void addRect(String[] rectInfo) {
-		
+		int i = 0;
+		while (rects[i][0] != "") {
+			i++;
+		}
+		rects[i] = rectInfo;
+		undoShape.add("Rectangle");
 	}
 	public void addLine(String[] lineInfo) {
-		
+		int i = 0;
+		while (lines[i][0] != "") {
+			i++;
+		}
+		lines[i] = lineInfo;
+		undoShape.add("Line");
 	}
 	public void addCircle(String[] circleInfo) {
-		
+		int i = 0;
+		while (circles[i][0] != "") {
+			i++;
+		}
+		circles[i] = circleInfo;
+		undoShape.add("Circle");
 	}
 	public void addTriangle(String[] triangleInfo) {
-		
+		int i = 0;
+		while (triangles[i][0] != "") {
+			i++;
+		}
+		triangles[i] = triangleInfo;
+		undoShape.add("Triangle");
 	}
 	public void addNewline() {
 		numNewline++;
+	}
+	public void addUndoShape(String action) {
+		undoShape.add(action);
 	}
 	public void removeNewline() {
 		numNewline--;

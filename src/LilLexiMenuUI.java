@@ -14,6 +14,16 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * PURPOSE:
+ * This class is responsible for handling all of the user interface
+ * for LilLexi menu bar
+ * 
+ * METHODS:
+ * + LilLexiMenuUI():					Constructor
+ * + start(): 							void
+ * + getMenuBar():						Menu
+ */
 public class LilLexiMenuUI {
 	Display display;
 	Shell shell;
@@ -23,6 +33,9 @@ public class LilLexiMenuUI {
 	LilLexiSpellCheck spellCheck;
 	Menu menuBar;
 	
+	/* - - - - - - CONSTRUCTOR - - - - - - - - - - - - - - - - - - - - - -
+	 * This function creates a new instance of LilLexiMenuUI
+	 */
 	public LilLexiMenuUI(Display display, Shell shell, Composite upperComp,
 			LilLexiControl lexiControl, Canvas canvas, LilLexiSpellCheck spellCheck) {
 		this.display = display;
@@ -33,6 +46,10 @@ public class LilLexiMenuUI {
 		this.spellCheck = spellCheck;
 	}
 	
+	/* - - - - - - START - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This method is responsible for starting setting up all necessary user 
+	 * interface elements for all options in the menu bar
+	 */
 	public void start() {
 		// Setup menus and menu items
 		Menu menuBar, fileMenu, insertMenu, helpMenu;
@@ -90,8 +107,8 @@ public class LilLexiMenuUI {
 	    // - - - - - Interface for adding a image - - - - - - - - - - - - - - //
 	    
 	    // Create shell for adding image
-	    Shell addImageShell = new Shell(display);
-		addImageShell.setSize(325, 225);
+	    Shell addImageShell = new Shell(display, SWT.NO_TRIM);
+		addImageShell.setSize(325, 235);
 		
 		Composite imageUpperComp = new Composite(addImageShell, SWT.NONE);
 		Composite imageLowerComp = new Composite(addImageShell, SWT.NONE);
@@ -108,7 +125,7 @@ public class LilLexiMenuUI {
         imageLowerComp.setLayout(new RowLayout(SWT.VERTICAL));
         
         imageUpperComp.setBounds(0, 0, 400, 250);
-        imageLowerComp.setBounds(0, 250, 400, 100);
+        imageLowerComp.setBounds(0, 250, 400, 150);
 
         addImageShell.setLayout(new RowLayout(SWT.VERTICAL));
         
@@ -181,6 +198,9 @@ public class LilLexiMenuUI {
         // Setup button for submitting the image
         Button submitImage = new Button(imageLowerComp, SWT.PUSH);
         submitImage.setText("Submit");
+        
+        Button closeImage = new Button(imageLowerComp, SWT.PUSH);
+        closeImage.setText("Close");
 	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
         
         
@@ -188,8 +208,8 @@ public class LilLexiMenuUI {
         // - - - - - Interface for adding a rectangle - - - - - - - - - - - //
         
         // Create shell for adding a rectangle
-        Shell addRectShell = new Shell(display);
-		addRectShell.setSize(280, 260);
+        Shell addRectShell = new Shell(display, SWT.NO_TRIM);
+		addRectShell.setSize(200, 230);
 		
 		Composite rectUpperComp = new Composite(addRectShell, SWT.NONE);
 		Composite rectLowerComp = new Composite(addRectShell, SWT.NONE);
@@ -199,7 +219,7 @@ public class LilLexiMenuUI {
         rectLowerComp.setLayout(new RowLayout(SWT.VERTICAL));
         addRectShell.setLayout(new RowLayout(SWT.VERTICAL));
         
-        rectUpperComp.setBounds(0, 0, 400, 400);
+        rectUpperComp.setBounds(0, 0, 400, 200);
         rectLowerComp.setBounds(0, 300, 400, 100);
         
         // Setup the rectangle width combo
@@ -229,6 +249,9 @@ public class LilLexiMenuUI {
         // Setup the rectangle submit button
         Button submitRect = new Button(rectLowerComp, SWT.PUSH);
         submitRect.setText("Submit");
+        
+        Button closeRect = new Button(rectLowerComp, SWT.PUSH);
+        closeRect.setText("Close");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
         
         
@@ -236,8 +259,8 @@ public class LilLexiMenuUI {
         // - - - - - - Interface for adding a line - - - - - - - - - - - - //
         
         // Create a new shell for adding a line
-        Shell addLineShell = new Shell(display);
-        addLineShell.setSize(200, 210);
+        Shell addLineShell = new Shell(display, SWT.NO_TRIM);
+        addLineShell.setSize(200, 230);
         
         Composite lineUpperComp = new Composite(addLineShell, SWT.NONE);
         Composite lineLowerComp = new Composite(addLineShell, SWT.NONE);
@@ -247,8 +270,8 @@ public class LilLexiMenuUI {
         lineLowerComp.setLayout(new RowLayout(SWT.VERTICAL));
         addLineShell.setLayout(new RowLayout(SWT.VERTICAL));
         
-        rectUpperComp.setBounds(0, 0, 400, 150);
-        rectLowerComp.setBounds(0, 150, 400, 50);
+        rectUpperComp.setBounds(0, 0, 400, 200);
+        rectLowerComp.setBounds(0, 150, 400, 100);
         
         // Setup the line x1 coordinate combo
         Label lineX1 = new Label(lineUpperComp, SWT.NONE);
@@ -277,6 +300,9 @@ public class LilLexiMenuUI {
         // Setup the line submit button
         Button submitLine = new Button(lineLowerComp, SWT.PUSH);
         submitLine.setText("Submit");
+        
+        Button closeLine = new Button(lineLowerComp, SWT.PUSH);
+        closeLine.setText("Close");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
         
         
@@ -284,8 +310,8 @@ public class LilLexiMenuUI {
         // - - - - - - Interface for adding a circle - - - - - - - - - - - //
         
         // Create shell for adding a circle
-        Shell addCircleShell = new Shell(display);
-        addCircleShell.setSize(200, 210);
+        Shell addCircleShell = new Shell(display, SWT.NO_TRIM);
+        addCircleShell.setSize(200, 230);
         
         Composite circleUpperComp = new Composite(addCircleShell, SWT.NONE);
         Composite circleLowerComp = new Composite(addCircleShell, SWT.NONE);
@@ -295,8 +321,8 @@ public class LilLexiMenuUI {
         circleLowerComp.setLayout(new RowLayout(SWT.VERTICAL));
         addCircleShell.setLayout(new RowLayout(SWT.VERTICAL));
         
-        circleUpperComp.setBounds(0, 0, 400, 150);
-        circleLowerComp.setBounds(0, 150, 400, 50);
+        circleUpperComp.setBounds(0, 0, 400, 200);
+        circleLowerComp.setBounds(0, 150, 400, 100);
         
         // Setup the circle x coordinate combo
         Label circleX = new Label(circleUpperComp, SWT.NONE);
@@ -325,6 +351,9 @@ public class LilLexiMenuUI {
         // Setup the circle submit button
         Button submitCircle = new Button(circleLowerComp, SWT.PUSH);
         submitCircle.setText("Submit");
+        
+        Button closeCircle = new Button(circleLowerComp, SWT.PUSH);
+        closeCircle.setText("Close");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
         
         
@@ -332,7 +361,7 @@ public class LilLexiMenuUI {
         // - - - - - - Interface for adding a triangle - - - - - - - - - - //
         
         // Create interface for adding a triangle
-        Shell addTriangleShell = new Shell(display);
+        Shell addTriangleShell = new Shell(display, SWT.NO_TRIM);
         addTriangleShell.setSize(200, 280);
         
         Composite triangleUpperComp = new Composite(addTriangleShell, SWT.NONE);
@@ -385,6 +414,9 @@ public class LilLexiMenuUI {
         // Setup the triangle submit button
         Button submitTriangle = new Button(triangleLowerComp, SWT.PUSH);
         submitTriangle.setText("Submit");
+        
+        Button closeTriangle = new Button(triangleLowerComp, SWT.PUSH);
+        closeTriangle.setText("Close");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
         
         
@@ -423,6 +455,7 @@ public class LilLexiMenuUI {
 	    insertImageItem.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		addImageShell.open();
+	    		addImageShell.setVisible(true);
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
@@ -431,6 +464,7 @@ public class LilLexiMenuUI {
 	    insertRectItem.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		addRectShell.open();
+	    		addRectShell.setVisible(true);
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
@@ -439,6 +473,7 @@ public class LilLexiMenuUI {
 	    insertLineItem.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		addLineShell.open();
+	    		addLineShell.setVisible(true);
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
@@ -447,6 +482,7 @@ public class LilLexiMenuUI {
 	    insertCircleItem.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		addCircleShell.open();
+	    		addCircleShell.setVisible(true);
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
@@ -455,6 +491,7 @@ public class LilLexiMenuUI {
 	    insertTriangleItem.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		addTriangleShell.open();
+	    		addTriangleShell.setVisible(true);
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
@@ -462,22 +499,28 @@ public class LilLexiMenuUI {
 	    // Selection listener for submitting an image
 	    submitImage.addSelectionListener(new SelectionListener() {
         	public void widgetSelected(SelectionEvent event) {
-        		String imageToAdd = imagesCombo.getText();
-        		imageToAdd = "/Users/ryanrizzo/eclipse-workspace/CSC335-A2-LilLexi/images/" + imageToAdd; 
-        		String imageX = imageXcombo.getText();
-        		String imageY = imageYcombo.getText();
-        		String[][] images = lexiControl.getImages();
-        		int index = 0;
-        		while (images[index][0] != "") {
-        			index++;
+        		if (!imagesCombo.getText().equals("") && !imageXcombo.getText().equals("") 
+        				&& !imageYcombo.getText().equals("")) {
+        			
+        			String imageToAdd = imagesCombo.getText();
+        			imageToAdd = "/Users/ryanrizzo/eclipse-workspace/CSC335-A2-LilLexi/images/" + imageToAdd; 
+        			String imageX = imageXcombo.getText();
+        			String imageY = imageYcombo.getText();
+        		
+	        		String[][] images = lexiControl.getImages();
+	        		int index = 0;
+	        		while (images[index][0] != "") {
+	        			index++;
+	        		}
+	        		String[] imageInfo = new String[3];
+	        		imageInfo[0] = imageToAdd;
+	        		imageInfo[1] = imageX;
+	        		imageInfo[2] = imageY;
+	        		images[index] = imageInfo;
+	        		addImageShell.setVisible(false);
+	        		lexiControl.addUndoShape("Image");
+	        		canvas.redraw();
         		}
-        		String[] imageInfo = new String[3];
-        		imageInfo[0] = imageToAdd;
-        		imageInfo[1] = imageX;
-        		imageInfo[2] = imageY;
-        		images[index] = imageInfo;
-        		addImageShell.close();
-        		canvas.redraw();
         	}
         	public void widgetDefaultSelected(SelectionEvent event) {}
         });
@@ -485,29 +528,33 @@ public class LilLexiMenuUI {
 	    // Selection listener for submitting a rectangle
 	    submitRect.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		// Get the variables
-	    		String rectWidth = rectWidthCombo.getText();
-        		String rectHeight = rectHeightCombo.getText();
-        		String rectX = rectXcombo.getText();
-        		String rectY = rectYcombo.getText();
-        		String[][] rects = lexiControl.getRects();
-        		
-        		// Move to end of array
-        		int index = 0;
-        		while (rects[index][0] != "") {
-        			index++;
-        		}
-        		// Set the variables
-        		String[] rectInfo = new String[4];
-        		rectInfo[0] = rectX;
-        		rectInfo[1] = rectY;
-        		rectInfo[2] = rectWidth;
-        		rectInfo[3] = rectHeight;
-        		rects[index] = rectInfo;
-        		
-        		// Update
-        		addRectShell.close();
-        		canvas.redraw();
+	    		if (!rectWidthCombo.getText().equals("") && !rectHeightCombo.getText().equals("")
+	    				&& !rectXcombo.getText().equals("") && !rectYcombo.getText().equals("")) {
+		    		// Get the variables
+		    		String rectWidth = rectWidthCombo.getText();
+	        		String rectHeight = rectHeightCombo.getText();
+	        		String rectX = rectXcombo.getText();
+	        		String rectY = rectYcombo.getText();
+	        		String[][] rects = lexiControl.getRects();
+	        		
+	        		// Move to end of array
+	        		int index = 0;
+	        		while (rects[index][0] != "") {
+	        			index++;
+	        		}
+	        		// Set the variables
+	        		String[] rectInfo = new String[4];
+	        		rectInfo[0] = rectX;
+	        		rectInfo[1] = rectY;
+	        		rectInfo[2] = rectWidth;
+	        		rectInfo[3] = rectHeight;
+	        		rects[index] = rectInfo;
+	        		
+	        		// Update
+	        		addRectShell.setVisible(false);
+	        		lexiControl.addUndoShape("Rectangle");
+	        		canvas.redraw();
+	    		}
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
@@ -515,30 +562,34 @@ public class LilLexiMenuUI {
 	    // Selection listener for submitting a line
 	    submitLine.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		// Get the variables
-	    		String lineX1 = lineX1combo.getText();
-	    		String lineY1 = lineY1combo.getText();
-	    		String lineX2 = lineX2combo.getText();
-	    		String lineY2 = lineY2combo.getText();
-	    		String[][] lines = lexiControl.getLines();
-	    		
-	    		// Move to end of array
-	    		int index = 0;
-	    		while (lines[index][0] != "") {
-	    			index++;
+	    		if (!lineX1combo.getText().equals("") && !lineY1combo.getText().equals("")
+	    				&& !lineX2combo.getText().equals("") && !lineY2combo.getText().equals("")) {
+		    		// Get the variables
+		    		String lineX1 = lineX1combo.getText();
+		    		String lineY1 = lineY1combo.getText();
+		    		String lineX2 = lineX2combo.getText();
+		    		String lineY2 = lineY2combo.getText();
+		    		String[][] lines = lexiControl.getLines();
+		    		
+		    		// Move to end of array
+		    		int index = 0;
+		    		while (lines[index][0] != "") {
+		    			index++;
+		    		}
+		    		
+		    		// Set the variables
+		    		String[] lineInfo = new String[4];
+		    		lineInfo[0] = lineX1;
+		    		lineInfo[1] = lineY1;
+		    		lineInfo[2] = lineX2;
+		    		lineInfo[3] = lineY2;
+		    		lines[index] = lineInfo;
+		    		
+		    		// Update
+		    		addLineShell.setVisible(false);
+		    		lexiControl.addUndoShape("Line");
+		    		canvas.redraw();
 	    		}
-	    		
-	    		// Set the variables
-	    		String[] lineInfo = new String[4];
-	    		lineInfo[0] = lineX1;
-	    		lineInfo[1] = lineY1;
-	    		lineInfo[2] = lineX2;
-	    		lineInfo[3] = lineY2;
-	    		lines[index] = lineInfo;
-	    		
-	    		// Update
-	    		addLineShell.close();
-	    		canvas.redraw();
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
@@ -546,30 +597,34 @@ public class LilLexiMenuUI {
 	    // Selection listener for submitting a circle
 	    submitCircle.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		// Get the variables
-	    		String circleX = circleXcombo.getText();
-	    		String circleY = circleYcombo.getText();
-	    		String circleWidth = circleWidthCombo.getText();
-	    		String circleHeight = circleHeightCombo.getText();
-	    		String[][] circles = lexiControl.getCircles();
-	    		
-	    		// Move to end of array
-	    		int index = 0;
-	    		while (circles[index][0] != "") {
-	    			index++;
+	    		if (!circleXcombo.getText().equals("") && !circleYcombo.getText().equals("")
+	    				&& !circleWidthCombo.getText().equals("") && !circleHeightCombo.getText().equals("")) {
+		    		// Get the variables
+		    		String circleX = circleXcombo.getText();
+		    		String circleY = circleYcombo.getText();
+		    		String circleWidth = circleWidthCombo.getText();
+		    		String circleHeight = circleHeightCombo.getText();
+		    		String[][] circles = lexiControl.getCircles();
+		    		
+		    		// Move to end of array
+		    		int index = 0;
+		    		while (circles[index][0] != "") {
+		    			index++;
+		    		}
+		    		
+		    		// Set the variables
+		    		String[] circleInfo = new String[4];
+		    		circleInfo[0] = circleX;
+		    		circleInfo[1] = circleY;
+		    		circleInfo[2] = circleWidth;
+		    		circleInfo[3] = circleHeight;
+		    		circles[index] = circleInfo;
+		    		
+		    		// Update
+		    		addCircleShell.setVisible(false);
+		    		lexiControl.addUndoShape("Circle");
+		    		canvas.redraw();
 	    		}
-	    		
-	    		// Set the variables
-	    		String[] circleInfo = new String[4];
-	    		circleInfo[0] = circleX;
-	    		circleInfo[1] = circleY;
-	    		circleInfo[2] = circleWidth;
-	    		circleInfo[3] = circleHeight;
-	    		circles[index] = circleInfo;
-	    		
-	    		// Update
-	    		addCircleShell.close();
-	    		canvas.redraw();
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
@@ -577,40 +632,75 @@ public class LilLexiMenuUI {
 	    // Selection listener for submitting a triangle
 	    submitTriangle.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
-	    		// Get the variables
-	    		String triangleX1 = triangleX1combo.getText();
-	    		String triangleY1 = triangleY1combo.getText();
-	    		String triangleX2 = triangleX2combo.getText();
-	    		String triangleY2 = triangleY2combo.getText();
-	    		String triangleX3 = triangleX3combo.getText();
-	    		String triangleY3 = triangleY3combo.getText();
-	    		String[][] triangles = lexiControl.getTriangles();
-	    		
-	    		// Move to end of array
-	    		int index = 0;
-	    		while (triangles[index][0] != "") {
-	    			index++;
+	    		if (!triangleX1combo.getText().equals("") && !triangleY1.getText().equals("")
+	    				&& !triangleX2combo.getText().equals("") && !triangleY2.getText().equals("")
+	    				&& !triangleX3combo.getText().equals("") && !triangleY3combo.getText().equals("")) {
+		    		// Get the variables
+		    		String triangleX1 = triangleX1combo.getText();
+		    		String triangleY1 = triangleY1combo.getText();
+		    		String triangleX2 = triangleX2combo.getText();
+		    		String triangleY2 = triangleY2combo.getText();
+		    		String triangleX3 = triangleX3combo.getText();
+		    		String triangleY3 = triangleY3combo.getText();
+		    		String[][] triangles = lexiControl.getTriangles();
+		    		
+		    		// Move to end of array
+		    		int index = 0;
+		    		while (triangles[index][0] != "") {
+		    			index++;
+		    		}
+		    		
+		    		// Set the variables
+		    		String[] triangleInfo = new String[6];
+		    		triangleInfo[0] = triangleX1;
+		    		triangleInfo[1] = triangleY1;
+		    		triangleInfo[2] = triangleX2;
+		    		triangleInfo[3] = triangleY2;
+		    		triangleInfo[4] = triangleX3;
+		    		triangleInfo[5] = triangleY3;
+		    		triangles[index] = triangleInfo;
+		    		
+		    		// Update
+		    		addTriangleShell.setVisible(false);
+		    		lexiControl.addUndoShape("Triangle");
+		    		canvas.redraw();
 	    		}
-	    		
-	    		// Set the variables
-	    		String[] triangleInfo = new String[6];
-	    		triangleInfo[0] = triangleX1;
-	    		triangleInfo[1] = triangleY1;
-	    		triangleInfo[2] = triangleX2;
-	    		triangleInfo[3] = triangleY2;
-	    		triangleInfo[4] = triangleX3;
-	    		triangleInfo[5] = triangleY3;
-	    		triangles[index] = triangleInfo;
-	    		
-	    		// Update
-	    		addTriangleShell.close();
-	    		canvas.redraw();
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
+	    closeImage.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent event) {}
+			public void widgetSelected(SelectionEvent event) {
+				addImageShell.setVisible(false);
+			}    	
+	    });
+	    closeRect.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent event) {}
+			public void widgetSelected(SelectionEvent event) {
+				addRectShell.setVisible(false);
+			}    	
+	    });
+	    closeLine.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent event) {}
+			public void widgetSelected(SelectionEvent event) {
+				addLineShell.setVisible(false);
+			}    	
+	    });
+	    closeCircle.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent event) {}
+			public void widgetSelected(SelectionEvent event) {
+				addCircleShell.setVisible(false);
+			}    	
+	    });
+	    closeTriangle.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent event) {}
+			public void widgetSelected(SelectionEvent event) {
+				addTriangleShell.setVisible(false);
+			}    	
+	    });
 	}
 	
-	/*
+	/* - - - - - - GET MUNU BAR - - - - - - - - - - - - - - - - - - - - - - - -
 	 * This function is responsible for returning the menu bar so that it many
 	 * be used in other classes.
 	 * 
