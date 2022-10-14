@@ -193,6 +193,14 @@ public class LilLexiDoc {
 		index++;
 		ui.updateUI();
 	}
+	
+	/* - - - - - - ADD UNDO SHAPE - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	 * This function adds a shape to the undo shape tracker
+	 */
+	public void addUndoShape(String action) {
+		undoShape.add(action);
+	}
+	
 	/* - - - - - - REMOVE - - - - - - - - - - - - - - - - - - - - - - - 
 	 * This function is responsible for removing a single Glyph
 	 * to the document.
@@ -258,16 +266,24 @@ public class LilLexiDoc {
 		}
 	}
 	
+	/* - - - - - - UNDO SHAPE - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for triggering the internal function for the 
+	 * undo shape button. Here we "remove" whatever shape was most previously
+	 * created
+	 */
 	public void undoShape() {
+		// check that there are shapes to remove
 		if (undoShape.size() > 0) {
 			String action = undoShape.pop();
+			// Check if image
 			if (action == "Image") {
-				
 				int i = 0;
 				while (images[i][0] != "") {
 					i++;
 				}
 				i--;
+				
+				// Get details
 				String[] redoInfo = new String[4];
 				redoInfo[0] = "Image";
 				redoInfo[1] = images[i][0];
@@ -278,12 +294,15 @@ public class LilLexiDoc {
 				images[i][1] = "";
 				images[i][2] = "";
 			}
+			// Check if rectangle
 			if (action == "Rectangle") {
 				int i = 0;
 				while (rects[i][0] != "") {
 					i++;
 				}
 				i--;
+				
+				// Get details
 				String[] redoInfo = new String[5];
 				redoInfo[0] = "Rectangle";
 				redoInfo[1] = rects[i][0];
@@ -296,12 +315,15 @@ public class LilLexiDoc {
 				rects[i][2] = "";
 				rects[i][3] = "";
 			}
+			// Check if line
 			if (action == "Line") {
 				int i = 0;
 				while (lines[i][0] != "") {
 					i++;
 				}
 				i--;
+				
+				// Get details
 				String[] redoInfo = new String[5];
 				redoInfo[0] = "Line";
 				redoInfo[1] = lines[i][0];
@@ -314,12 +336,15 @@ public class LilLexiDoc {
 				lines[i][2] = "";
 				lines[i][3] = "";
 			}
+			// Check if circle
 			if (action == "Circle") {
 				int i = 0;
 				while (circles[i][0] != "") {
 					i++;
 				}
 				i--;
+				
+				// Get details
 				String[] redoInfo = new String[5];
 				redoInfo[0] = "Circle";
 				redoInfo[1] = circles[i][0];
@@ -332,12 +357,15 @@ public class LilLexiDoc {
 				circles[i][2] = "";
 				circles[i][3] = "";
 			}
+			// Check if triangle
 			if (action == "Triangle") {
 				int i = 0;
 				while (triangles[i][0] != "") {
 					i++;
 				}
 				i--;
+				
+				// Get details
 				String[] redoInfo = new String[7];
 				redoInfo[0] = "Triangle";
 				redoInfo[1] = triangles[i][0];
@@ -357,27 +385,33 @@ public class LilLexiDoc {
 		}
 	}
 	
+	/* - - - - - - REDO SHAPE - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for triggering the internal function for the 
+	 * redo shape button. Here we "replace" whatever shape was most previously
+	 * undone.
+	 */
 	public void redoShape() {
+		// Check that something has been undone
 		if (redoShape.size() > 0) {
 			String[] info = redoShape.pop();
 			String action = info[0];
-			
+			// Check if image
 			if (action == "Image") {
 				addImage(Arrays.copyOfRange(info, 1, 4));
 			}
-			
+			// Check if rectangle
 			if (action == "Rectangle") {
 				addRect(Arrays.copyOfRange(info, 1, 5));
 			}
-			
+			// Check if line
 			if (action == "Line") {
 				addLine(Arrays.copyOfRange(info, 1, 5));
 			}
-			
+			// Check if circle
 			if (action == "Circle") {
 				addCircle(Arrays.copyOfRange(info, 1, 5));
 			}
-			
+			// Check if triangle
 			if (action == "Triangle") {
 				addTriangle(Arrays.copyOfRange(info, 1, 7));
 			}
@@ -494,7 +528,7 @@ public class LilLexiDoc {
 		return images;
 	}
 	
-	/* - - - - - - GET RECTANGLES - - - - - - - - - - - - - - - - - - - - -
+	/* - - - - - - GET RECTANGLES - - - - - - - - - - - - - - - - - - - - - - - -
 	 * Returns a 2d array containing all images on the document
 	 * 
 	 * @return String[][], all rectangles
@@ -503,7 +537,7 @@ public class LilLexiDoc {
 		return rects;
 	}
 	
-	/* - - - - - - GET LINES - - - - - - - - - - - - - - - - - - - - - - - 
+	/* - - - - - - GET LINES - - - - - - - - - - - - - - - - - - - - - - - - --
 	 * Returns a 2d array containing all lines on the document
 	 * 
 	 * @return String[][], all lines
@@ -512,7 +546,7 @@ public class LilLexiDoc {
 		return lines;
 	}
 	
-	/* - - - - - - GET CIRCLES - - - - - - - - - - - - - - - - - - - - - -
+	/* - - - - - - GET CIRCLES - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * Returns a 2d array containing all circles on the document
 	 * 
 	 * @return String[][], all circles
@@ -521,7 +555,7 @@ public class LilLexiDoc {
 		return circles;
 	}
 	
-	/* - - - - - - GET TRIANGLES - - - - - - - - - - - - - - - - - - - - - 
+	/* - - - - - - GET TRIANGLES - - - - - - - - - - - - - - - - - - - - - - - - 
 	 * Returns a 2d array containing all triangles on the document
 	 * 
 	 * @return String[][], all triangles
@@ -530,7 +564,7 @@ public class LilLexiDoc {
 		return triangles;
 	}
 	
-	/* - - - - - - GET NUM NEWLINE - - - - - - - - - - - - - - - - - - - - 
+	/* - - - - - - GET NUM NEWLINE - - - - - - - - - - - - - - - - - - - - - - - -
 	 * Returns the number of user entered newlines
 	 * 
 	 * @return in, number of newlines
@@ -539,7 +573,7 @@ public class LilLexiDoc {
 		return numNewline;
 	}
 	
-	/* - - - - - - GET ROW WIDTH - - - - - - - - - - - - - - - - - - - - -
+	/* - - - - - - GET ROW WIDTH - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * Returns information about the number of characters in each row
 	 * 
 	 * @return rowWidth, an int[] 
@@ -548,7 +582,7 @@ public class LilLexiDoc {
 		return rowWidth;
 	}
 	
-	/* - - - - - - GET ROWW WIDTH - - - - - - - - - - - - - - - - - - - - - 
+	/* - - - - - - GET ROWW WIDTH - - - - - - - - - - - - - - - - - - - - - - - - -
 	 * Returns the width of each row
 	 * 
 	 * @return rowsWidth, int 
@@ -557,7 +591,7 @@ public class LilLexiDoc {
 		return this.rowsWidth;
 	}
 	
-	/* - - - - - - GET COLUMN WIDTH - - - - - - - - - - - - - - - - - - - - 
+	/* - - - - - - GET COLUMN WIDTH - - - - - - - - - - - - - - - - - - - - - - - -
 	 * Returns the width of each column
 	 * 
 	 * @return columnWidth, int
@@ -566,7 +600,7 @@ public class LilLexiDoc {
 		return this.columnWidth;
 	}
 	
-	/* - - - - - - GET PAGES - - - - - - - - - - - - - - - - - - - - - - - - 
+	/* - - - - - - GET PAGES - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	 * Returns the number of pages in the document
 	 * 
 	 * @return pages, int
@@ -575,6 +609,9 @@ public class LilLexiDoc {
 		return this.pages;
 	}
 	
+	/* - - - - - - GET BACKGROUND COLOR - - - - - - - - - - - - - - - - - - - - - - -
+	 * 
+	 */
 	public String getCurrBackgroundColor() {
 		return this.backgroundColor;
 	}
@@ -700,7 +737,9 @@ public class LilLexiDoc {
 	}
 	
 	/* - - - - - - ADD IMAGE - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for adding a image to the document
 	 * 
+	 * @param imageInfo, an array containing info for image placement
 	 */
 	public void addImage(String[] imageInfo) {
 		int i = 0;
@@ -710,6 +749,12 @@ public class LilLexiDoc {
 		images[i] = imageInfo;
 		
 	}
+	
+	/* - - - - - - ADD RECTANGLE - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for adding a rectangle to the document
+	 * 
+	 * @param rectInfo, an array containing info for rectangle placement
+	 */
 	public void addRect(String[] rectInfo) {
 		int i = 0;
 		while (rects[i][0] != "") {
@@ -718,6 +763,12 @@ public class LilLexiDoc {
 		rects[i] = rectInfo;
 		undoShape.add("Rectangle");
 	}
+	
+	/* - - - - - - ADD LINE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for adding a line to the document
+	 * 
+	 * @param lineInfo, an array containing info for line placement
+	 */
 	public void addLine(String[] lineInfo) {
 		int i = 0;
 		while (lines[i][0] != "") {
@@ -726,6 +777,12 @@ public class LilLexiDoc {
 		lines[i] = lineInfo;
 		undoShape.add("Line");
 	}
+	
+	/* - - - - - - ADD CIRCLE - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for adding a circle to the document
+	 * 
+	 * @param circleInfo, an array containing info for circle placement
+	 */
 	public void addCircle(String[] circleInfo) {
 		int i = 0;
 		while (circles[i][0] != "") {
@@ -734,6 +791,12 @@ public class LilLexiDoc {
 		circles[i] = circleInfo;
 		undoShape.add("Circle");
 	}
+	
+	/* - - - - - - ADD TRIANGLE - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for adding a triangle to the document
+	 * 
+	 * @param triangle Info, and array containing info for triangle placement
+	 */
 	public void addTriangle(String[] triangleInfo) {
 		int i = 0;
 		while (triangles[i][0] != "") {
@@ -742,12 +805,17 @@ public class LilLexiDoc {
 		triangles[i] = triangleInfo;
 		undoShape.add("Triangle");
 	}
+	
+	/* - - - - - - ADD NEWLINE - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for increasing the newline counter
+	 */
 	public void addNewline() {
 		numNewline++;
 	}
-	public void addUndoShape(String action) {
-		undoShape.add(action);
-	}
+	
+	/* - - - - - - REMOVE NEWLINE - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function is responsible for decreasing the newline counter
+	 */
 	public void removeNewline() {
 		numNewline--;
 	}
@@ -756,8 +824,21 @@ public class LilLexiDoc {
 
 
 
+
 /**
- * Glyph
+ * PURPOSE:
+ * This class is responsible for housing all information for each character on the
+ * document
+ * 
+ * METHODS:
+ * + Glyph():					Constructor
+ * + getChar():					char
+ * + getFont():					String
+ * + getSize():					int
+ * + getColor():				String
+ * + setChar(char):				void
+ * + setFont(String):			void
+ * + setColor(String):			void			
  */
 class Glyph 
 {
@@ -766,43 +847,76 @@ class Glyph
 	private String color;
 	private int size;
 	
+	/* - - - - - - CONSTRUCTOR - - - - - - - - - - - - - - - - - - - - - -
+	 * This function creates a new instance of Glyph
+	 */
 	public Glyph(char c, String font, int size, String color) {
 		this.c = c;
 		this.font = font;
 		this.size = size;
 		this.color = color;
 	}
-
+	
+	/* - - - - - - GET CHARACTER - - - - - - - - - - - - - - - - - - - - -
+	 * This function returns the character which represents this glyph
+	 * 
+	 * @return c, the char 
+	 */
 	public char getChar() {
 		return c;
 	}
 	
+	/* - - - - - - GET FONT - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function returns the current text font
+	 * 
+	 * @return font, the string
+	 */
 	public String getFont() {
 		return font;
 	}
 	
+	/* - - - - - - GET SIZE - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function returns the current text size
+	 * 
+	 * @return size, the int
+	 */
 	public int getSize() {
 		return size;
 	}
 	
+	/* - - - - - - GET COLOR - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function returns the current text color
+	 * 
+	 * @return color, the string
+	 */
 	public String getColor() {
 		return color;
 	}
-	
+
+	/* - - - - - - SET CHAR - - - - - - - - - - - - - - - - - - - - - - - - 
+	 * This function sets the current character
+	 * 
+	 * @param c, char to add
+	 */
 	public void setChar(char c) {
 		this.c = c;
 	}
 	
+	/* - - - - - - SET FONT - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function sets this current font
+	 * 
+	 * @param font, font to add
+	 */
 	public void setFont(String font) {
 		this.font = font;
 	}
 	
+	/* - - - - - - SET COLOR - - - - - - - - - - - - - - - - - - - - - - - -
+	 * This function sets the current text color
+	 * 
+	 * @param color, color to add
+	 */
 	public void setColor(String color) {
 		this.color = color;
 	}
 }
-
-
-
-
-
