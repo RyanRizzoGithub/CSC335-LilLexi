@@ -1,14 +1,24 @@
 LIL LEXI
 
+
 AUHTOR:       Ryan Rizzo
+
 CLASS:        CSC 335
+
 DATE:         10/14/122
+
 FILES:        LilLexi.java
+
               LilLexiDoc.java
+              
               LilLexiUI.java
+              
               LilLexiMenuUI.java
+              
               LilLexiSidebar.java
+              
               LilLexiController.java
+              
               Dictionary.txt
 
 PURPOSE: This program is meant to be an interactive text editor.
