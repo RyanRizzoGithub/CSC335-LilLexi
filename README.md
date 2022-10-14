@@ -1,11 +1,17 @@
 LIL LEXI
 
 
-AUHTOR:       Ryan Rizzo
+AUHTOR:       
 
-CLASS:        CSC 335
+              Ryan Rizzo
 
-DATE:         10/14/122
+CLASS:        
+
+              CSC 335
+
+DATE:         
+              
+              10/14/122
 
 FILES:        
               
