@@ -1,7 +1,7 @@
 LIL LEXI
 
 
-AUHTOR:       
+AUHTOR(S):       
 
               Ryan Rizzo
 
