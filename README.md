@@ -7,7 +7,9 @@ CLASS:        CSC 335
 
 DATE:         10/14/122
 
-FILES:        LilLexi.java
+FILES:        
+              
+              LilLexi.java
 
               LilLexiDoc.java
               
@@ -21,7 +23,9 @@ FILES:        LilLexi.java
               
               Dictionary.txt
 
-PURPOSE: This program is meant to be an interactive text editor.
+PURPOSE:
+
+          This program is meant to be an interactive text editor.
 
 FEATURES: 
 
