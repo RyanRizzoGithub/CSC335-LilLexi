@@ -14,18 +14,35 @@ DATE:
               10/14/122
 
 FILES:        
+              Glyph.class
               
               LilLexi.java
+              
+              LilLexi.class
 
               LilLexiDoc.java
               
+              LilLexiDoc.class
+              
               LilLexiUI.java
+              
+              LilLexiUI.class
               
               LilLexiMenuUI.java
               
-              LilLexiSidebar.java
+              LilLexiMenuUI.class
+              
+              LilLexiSidebarUI.java
+              
+              LilLexiSidebarUI.class
               
               LilLexiController.java
+              
+              LilLexiController.class
+              
+              LilLexiSpellCheck.java
+              
+              LilLexiSpellCheck.class
               
               Dictionary.txt
 
