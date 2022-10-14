@@ -65,6 +65,7 @@ public class LilLexiSpellCheck {
 	 * document, and determine if any of them are not found in out dictionary
 	 */
 	public void checkWords() {
+		errors.clear();
 		System.out.println("Spell check...");
 		
 		// Get all Glyphs from the document

@@ -14,9 +14,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -241,6 +239,7 @@ public class LilLexiSidebarUI {
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
 	    
+	    // Selection listener for use of the undo shape button
 	    undoShape.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		lexiControl.undoShape();
@@ -249,6 +248,7 @@ public class LilLexiSidebarUI {
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
 	    
+	    // Selection listener for user of redo shape button
 	    redoShape.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		lexiControl.redoShape();
@@ -308,6 +308,7 @@ public class LilLexiSidebarUI {
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
 	    
+	    // Selection listener for using a new background color
 	    backgroundColorCombo.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		String backgroundColor = backgroundColorCombo.getText();
@@ -330,6 +331,7 @@ public class LilLexiSidebarUI {
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
 	    
+	    // Selection listener for closing the spell check window
 	    closeSpellCheck.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
 	    		spellCheckShell.setVisible(false);

@@ -77,16 +77,22 @@ public class LilLexiControl {
 	}
 	
 	/* - - - - - - REDO - - - - - - - - - - - - - - - - - - - - - - - - - -
-	 * Redoes the users most recent undo
+	 * Redoes the users most recent text undo
 	 */
 	void redo() {
 		currentDoc.redo();
 	}
 	
+	/* - - - - - - UNDO SHAPE - - - - - - - - - - - - - - - - - - - - - - - 
+	 * Undoes the users most recent insert
+	 */
 	void undoShape() {
 		currentDoc.undoShape();
 	}
 	
+	/* - - - - - - REDO SHAPE - - - - - - - - - - - - - - - - - - - - - - -
+	 * Redoes the users most recent insert undo
+	 */
 	void redoShape() {
 		currentDoc.redoShape();
 	}
@@ -208,6 +214,11 @@ public class LilLexiControl {
 		currentDoc.setCurrEdgeMargin(margin);
 	}
 	
+	/* - - - - - - SET CURR BACKGROUND COLOR - - - - - - - - - - - - - - - -
+	 * Sets the current background color for the document
+	 * 
+	 * @return String, document color
+	 */
 	void setCurrBackgroundColor(String color) {
 		currentDoc.setCurrBackgroundColor(color);
 	}

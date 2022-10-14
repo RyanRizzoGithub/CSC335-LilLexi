@@ -1,3 +1,10 @@
+/**
+ * AUTHOR(S):	Ryan Rizzo
+ * CLASS:		CSC 335
+ * FILE:		LilLexiMenuUI.java
+ * DATE:		10/13/22
+ */
+
 import java.io.File;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -199,6 +206,7 @@ public class LilLexiMenuUI {
         Button submitImage = new Button(imageLowerComp, SWT.PUSH);
         submitImage.setText("Submit");
         
+        // Setup button for closing the image shell
         Button closeImage = new Button(imageLowerComp, SWT.PUSH);
         closeImage.setText("Close");
 	    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
@@ -250,6 +258,7 @@ public class LilLexiMenuUI {
         Button submitRect = new Button(rectLowerComp, SWT.PUSH);
         submitRect.setText("Submit");
         
+        // Setup button for closing the rectangle shell
         Button closeRect = new Button(rectLowerComp, SWT.PUSH);
         closeRect.setText("Close");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
@@ -301,6 +310,7 @@ public class LilLexiMenuUI {
         Button submitLine = new Button(lineLowerComp, SWT.PUSH);
         submitLine.setText("Submit");
         
+        // Setup button for closing line shell
         Button closeLine = new Button(lineLowerComp, SWT.PUSH);
         closeLine.setText("Close");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
@@ -352,6 +362,7 @@ public class LilLexiMenuUI {
         Button submitCircle = new Button(circleLowerComp, SWT.PUSH);
         submitCircle.setText("Submit");
         
+        // Setup button to close the circle shell
         Button closeCircle = new Button(circleLowerComp, SWT.PUSH);
         closeCircle.setText("Close");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
@@ -415,6 +426,7 @@ public class LilLexiMenuUI {
         Button submitTriangle = new Button(triangleLowerComp, SWT.PUSH);
         submitTriangle.setText("Submit");
         
+        // Setup button to close triangle shell
         Button closeTriangle = new Button(triangleLowerComp, SWT.PUSH);
         closeTriangle.setText("Close");
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
@@ -499,19 +511,24 @@ public class LilLexiMenuUI {
 	    // Selection listener for submitting an image
 	    submitImage.addSelectionListener(new SelectionListener() {
         	public void widgetSelected(SelectionEvent event) {
+        		// Check if all fields are filled
         		if (!imagesCombo.getText().equals("") && !imageXcombo.getText().equals("") 
         				&& !imageYcombo.getText().equals("")) {
         			
+        			// Get the variables
         			String imageToAdd = imagesCombo.getText();
         			imageToAdd = "/Users/ryanrizzo/eclipse-workspace/CSC335-A2-LilLexi/images/" + imageToAdd; 
         			String imageX = imageXcombo.getText();
         			String imageY = imageYcombo.getText();
         		
+        			// Move to end of array
 	        		String[][] images = lexiControl.getImages();
 	        		int index = 0;
 	        		while (images[index][0] != "") {
 	        			index++;
 	        		}
+	        		
+	        		// Set the variables
 	        		String[] imageInfo = new String[3];
 	        		imageInfo[0] = imageToAdd;
 	        		imageInfo[1] = imageX;
@@ -528,6 +545,7 @@ public class LilLexiMenuUI {
 	    // Selection listener for submitting a rectangle
 	    submitRect.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
+	    		// Check if all fields are filled
 	    		if (!rectWidthCombo.getText().equals("") && !rectHeightCombo.getText().equals("")
 	    				&& !rectXcombo.getText().equals("") && !rectYcombo.getText().equals("")) {
 		    		// Get the variables
@@ -562,6 +580,7 @@ public class LilLexiMenuUI {
 	    // Selection listener for submitting a line
 	    submitLine.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
+	    		// Check if all fields are filled
 	    		if (!lineX1combo.getText().equals("") && !lineY1combo.getText().equals("")
 	    				&& !lineX2combo.getText().equals("") && !lineY2combo.getText().equals("")) {
 		    		// Get the variables
@@ -597,6 +616,7 @@ public class LilLexiMenuUI {
 	    // Selection listener for submitting a circle
 	    submitCircle.addSelectionListener(new SelectionListener() {
 	    	public void widgetSelected(SelectionEvent event) {
+	    		// Check if all fields are filled
 	    		if (!circleXcombo.getText().equals("") && !circleYcombo.getText().equals("")
 	    				&& !circleWidthCombo.getText().equals("") && !circleHeightCombo.getText().equals("")) {
 		    		// Get the variables
@@ -631,6 +651,7 @@ public class LilLexiMenuUI {
 	    
 	    // Selection listener for submitting a triangle
 	    submitTriangle.addSelectionListener(new SelectionListener() {
+	    	// Check if all fields are filled
 	    	public void widgetSelected(SelectionEvent event) {
 	    		if (!triangleX1combo.getText().equals("") && !triangleY1.getText().equals("")
 	    				&& !triangleX2combo.getText().equals("") && !triangleY2.getText().equals("")
@@ -668,30 +689,40 @@ public class LilLexiMenuUI {
 	    	}
 	    	public void widgetDefaultSelected(SelectionEvent event) {}
 	    });
+	    
+	    // Selection listener to close the image shell
 	    closeImage.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent event) {}
 			public void widgetSelected(SelectionEvent event) {
 				addImageShell.setVisible(false);
 			}    	
 	    });
+	    
+	    // Selection listener to close the rectangle shell
 	    closeRect.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent event) {}
 			public void widgetSelected(SelectionEvent event) {
 				addRectShell.setVisible(false);
 			}    	
 	    });
+	    
+	    // Selection listener to close the line shell
 	    closeLine.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent event) {}
 			public void widgetSelected(SelectionEvent event) {
 				addLineShell.setVisible(false);
 			}    	
 	    });
+	    
+	    // Selection listener to close the circle shell
 	    closeCircle.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent event) {}
 			public void widgetSelected(SelectionEvent event) {
 				addCircleShell.setVisible(false);
 			}    	
 	    });
+	    
+	    // Selection listener to close the triangle shell
 	    closeTriangle.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent event) {}
 			public void widgetSelected(SelectionEvent event) {
