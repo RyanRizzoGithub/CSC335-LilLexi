@@ -36,6 +36,10 @@ FILES:
               
               LilLexiSidebarUI.class
               
+              LilLexiLoader.java
+             
+              LilLexiLoader.class
+              
               LilLexiController.java
               
               LilLexiController.class
