@@ -4,6 +4,9 @@
 AUHTOR:       
 - Ryan Rizzo
 
+PURPOSE:
+- This program is an interactive text editor with spell check. This editor allows the user to change their font, font size, & text color. Additionally the user can edit the document by changing the margin sizes, and inserting shapes or images.
+
 FILES:        
 - Glyph.class
 - LilLexi.java
@@ -23,9 +26,6 @@ FILES:
 - LilLexiSpellCheck.java
 - LilLexiSpellCheck.class
 - Dictionary.txt
-
-PURPOSE:
-- This program is meant to be an interactive text editor.
 
 FEATURES: 
 - Change text size
