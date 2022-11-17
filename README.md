@@ -1,7 +1,7 @@
 # Lil Lexi
 
 
-AUHTOR:       
+AUTHOR:       
 - Ryan Rizzo
 
 PURPOSE:
