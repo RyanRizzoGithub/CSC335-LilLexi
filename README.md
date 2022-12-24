@@ -1,5 +1,6 @@
 # Lil Lexi
 
+<img width="903" alt="Screen Shot 2022-12-24 at 4 17 52 PM" src="https://user-images.githubusercontent.com/89487878/209451239-a334c6df-67c1-45b6-9bc6-dbe04ab32839.png">
 
 AUTHOR:       
 - Ryan Rizzo
